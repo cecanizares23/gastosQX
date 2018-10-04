@@ -1,0 +1,213 @@
+/*
+ * ContextDataResourceNames.java
+ *
+ * Proyecto: gastosQX
+ * Cliente: CSJ
+ * Copyright 2018 by Ing. Carlos Cañizares
+ * All rights reserved
+ */
+
+package co.IngCarlos.gastosQX.mvc.dao;
+
+import co.IngCarlos.gastosQX.common.util.AsignaAtributoStatement;
+import co.IngCarlos.gastosQX.common.util.LoggerMessage;
+import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author PC
+ */
+public class ArticulosDAO {
+    
+    /**
+     *
+     * @param conexion
+     * @param datosArticulos
+     * @param usuario
+     * @return
+     */
+    public boolean registrarArticulo(Connection conexion, ArticulosDTO datosArticulos, String usuario) {
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" INSERT INTO articulos (arti_referencia, arti_lote, arti_cantidad, arti_unidadmedida, arti_cantidadmax, arti_cantidadmin, arti_registradopor)");
+            cadSQL.append("VALUES ( ?, ?, ?, ?, ?, ?, ?)");
+
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+
+            AsignaAtributoStatement.setString(1, datosArticulos.getReferencia(), ps);
+            AsignaAtributoStatement.setString(2, datosArticulos.getLote(), ps);
+            AsignaAtributoStatement.setString(3, datosArticulos.getCantidad(), ps);
+            AsignaAtributoStatement.setString(4, datosArticulos.getUnidadMedidad(), ps);
+            AsignaAtributoStatement.setString(5, datosArticulos.getCantidadMax(), ps);
+            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);
+            AsignaAtributoStatement.setString(7, usuario, ps);            
+
+            nRows = ps.executeUpdate();
+
+            if (nRows > 0) {
+                rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    datosArticulos.setId(rs.getString(1));
+                    registroExitoso = true;
+                }
+                rs.close();
+                rs = null;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+        }
+        return registroExitoso;
+    }
+
+    /**
+     * @param conexion
+     * @param datosArticulos
+     * @param usuario
+     * @return
+     */
+    public boolean actualizarArticulo(Connection conexion, ArticulosDTO datosArticulos, String usuario) {
+
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+
+        try {
+
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE articulos SET arti_referencia = ?, arti_lote = ?, arti_cantidad = ?, arti_unidadmedida = ?, arti_cantidadmax = ?, arti_cantidadmin = ?, arti_registradopor = ? WHERE   arti_id = ?");
+
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, datosArticulos.getReferencia(), ps);
+            AsignaAtributoStatement.setString(2, datosArticulos.getLote(), ps);
+            AsignaAtributoStatement.setString(3, datosArticulos.getCantidad(), ps);
+            AsignaAtributoStatement.setString(4, datosArticulos.getUnidadMedidad(), ps);
+            AsignaAtributoStatement.setString(5, datosArticulos.getCantidadMax(), ps);
+            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);
+            AsignaAtributoStatement.setString(7, usuario, ps);
+            AsignaAtributoStatement.setString(8, datosArticulos.getId(), ps);
+
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @return
+     */
+    public boolean eliminarArticulo(Connection conexion, String id) {
+
+        PreparedStatement ps = null;
+        int nRows = 0;
+        boolean deleteExitoso = false;
+        StringBuilder cadSQL = null;
+
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" DELETE  FROM articulos WHERE arti_id = ? ");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+
+            AsignaAtributoStatement.setString(1, id, ps);            
+            nRows = ps.executeUpdate();
+
+            if (nRows > 0) {
+                deleteExitoso = true;
+            }
+            ps.close();
+            ps = null;
+
+        } catch (SQLException e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return false;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return false;
+            }
+        }
+        return deleteExitoso;
+    }
+
+    /**
+     *
+     * @param conexion
+     * @return
+     */
+    public ArrayList<ArticulosDTO> listarTodosLosArticulos(Connection conexion) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<ArticulosDTO> listado = null;
+        ArticulosDTO datosArticulos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT arti_id, arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, ");
+            cadSQL.append(" arti_cantidadmax, arti_cantidadmin, arti_registradopor, arti_fecharegistro ");
+            cadSQL.append(" FROM articulos ");
+            ps = conexion.prepareStatement(cadSQL.toString());
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+            while (rs.next()) {
+                datosArticulos = new ArticulosDTO();
+                datosArticulos.setId(rs.getString("arti_id"));
+                datosArticulos.setReferencia(rs.getString("arti_referencia"));
+                datosArticulos.setLote(rs.getString("arti_lote"));
+                datosArticulos.setDescripcion(rs.getString("arti_descripcion"));
+                datosArticulos.setCantidad(rs.getString("arti_cantidad"));
+                datosArticulos.setUnidadMedidad(rs.getString("arti_unidadmedida"));
+                datosArticulos.setCantidadMax(rs.getString("arti_cantidadmax"));
+                datosArticulos.setCantidadMin(rs.getString("arti_cantidadmin"));
+                datosArticulos.setRegistradoPor(rs.getString("arti_registradopor"));
+                datosArticulos.setFechaRegistro(rs.getString("arti_fecharegistro"));
+                listado.add(datosArticulos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+        return listado;
+    }
+    
+}

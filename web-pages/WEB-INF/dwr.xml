@@ -1,0 +1,14 @@
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://directwebremoting.org/schema/dwr20.dtd">
+<dwr>
+    <init/>
+    <allow>
+        <create creator="new" javascript="JDate">
+            <param name="class" value="java.util.Date"/>
+        </create>
+        <convert match="java.lang.Exception" converter="exception">
+            <param name="include" value="message,lineNumber" />
+        </convert>
+        <convert converter="bean" match="co.IngCarlos.gastosQX.mvc.dto.*"/>
+    </allow>
+    <signatures/>
+</dwr>
