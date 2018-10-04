@@ -251,5 +251,13 @@ public class FachadaAppGastos {
         return MediadorAppGastos.getInstancia().validarDocumento(datosUsuario);
     }
 
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<TipoUsuarioDTO> listarCargos() {
+        return MediadorAppGastos.getInstancia().listarCargos();
+    }
     
 }

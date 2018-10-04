@@ -12,6 +12,7 @@
 
 <%
     DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+    System.out.println("DatosUsuario" + datosUsuario.toStringJson());
 %>
 
 <div class="row">
@@ -156,8 +157,6 @@
 <script>
 
     //globales
-    var muni;
-    var depa;
     var idUsuario = "";
 
     jQuery(document).ready(function() {
@@ -196,22 +195,7 @@
 
     });
 
-    function listarMunicipioEditar(idDepartamento) {
-        ajaxGastos.listarMunicipioPorDepartamentoSelecionado(idDepartamento, {
-            callback: function(data) {
-                if (data !== null) {                    
-                    dwr.util.removeAllOptions("municipio");
-                    dwr.util.addOptions("municipio", [{
-                            id: '',
-                            nombre: ' '
-                        }], 'id', 'nombre');
-                    dwr.util.addOptions("municipio", data, 'id', 'nombre');
-                    jQuery("#municipio").val(parseInt(muni)).trigger("change");
-                }
-            },
-            timeout: 20000
-        });
-    }
+    
 
     function validaUsuario(user) {
         var datosUsuario = {
@@ -280,8 +264,6 @@
             fechaNacimiento: jQuery("#fechaNacimiento").val(),
             estado: jQuery("#estado").val(),
             tipoUsuario: jQuery("#tipoUsuario").val(),
-            municipio: jQuery("#municipio").val(),
-            genero: jQuery("#genero").val(),
             celular: jQuery("#telefonoMovil").val(),
             direccion: jQuery("#direccion").val(),
             telefono: jQuery("#telefonoFijo").val(),
@@ -319,10 +301,7 @@
         jQuery("#email").prop("disabled", true);
         jQuery("#fechaNacimiento").prop("disabled", true);
         jQuery("#estado").prop("disabled", true);
-        jQuery("#tipoUsuario").prop("disabled", true);
-        jQuery("#departamento").prop("disabled", true);
-        jQuery("#municipio").prop("disabled", true);
-        jQuery("#genero").prop("disabled", true);
+        jQuery("#tipoUsuario").prop("disabled", true);       
         jQuery("#telefonoMovil").prop("disabled", true);
         jQuery("#direccion").prop("disabled", true);
         jQuery("#telefonoFijo").prop("disabled", true);
@@ -341,9 +320,7 @@
         jQuery("#email").val("");
         jQuery("#fechaNacimiento").val("");
         jQuery("#estado").val("");
-        jQuery("#tipoUsuario").val("");
-        jQuery("#departamento").val("");
-        jQuery("#municipio").val("");
+        jQuery("#tipoUsuario").val("");        
         jQuery("#genero").val("");
         jQuery("#telefonoMovil").val("");
         jQuery("#direccion").val("");

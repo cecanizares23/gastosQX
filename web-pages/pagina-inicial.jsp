@@ -26,7 +26,7 @@
 <script>
 
     jQuery(document).ready(function() {
-        alarmasPmt();
+       
     });
 
     var hoy = new Date();
@@ -44,7 +44,7 @@
 
     hoy = dd + '/' + mm + '/' + yyyy;
 
-    function alarmasPmt() {
+    /**function alarmasPmt() {
         var listadoPmtActivos = [];
         ajaxCnk.listarPmtXEstadoActivo({
             callback: function(data) {
@@ -88,7 +88,7 @@
             },
             timeout: 20000
         });
-    }
+    }**/
 
     function notificacion(tipo, msj, id) {
         $(".alert").alert('close');
