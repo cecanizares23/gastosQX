@@ -143,8 +143,8 @@ public class UsuarioDAO {
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT usua.usua_id, usua.tido_id, usua.tius_id, usua.usua_estado, usua.muni_id, usua.usua_fechanaci, usua.usua_nombre,");
-            cadSQL.append(" usua.usua_documento, usua.usua_celular, usua.usua_correo, usua.usua_apellido, usua.gene_id, usse.usse_usuario, usua.usua_registradopor");
+            cadSQL.append(" SELECT usua.usua_id, usua.tido_id, usua.tius_id, usua.usua_estado, usua.usua_fechanaci, usua.usua_nombre,");
+            cadSQL.append(" usua.usua_documento, usua.usua_celular, usua.usua_correo, usua.usua_apellido, usse.usse_usuario, usua.usua_registradopor");
             cadSQL.append(" FROM usuario usua");
             cadSQL.append(" INNER JOIN usuario_seguridad usse ON usua.usua_id = usse.usua_id");
 
@@ -158,14 +158,13 @@ public class UsuarioDAO {
                 datosUsuario.setId(rs.getString("usua_id"));
                 datosUsuario.setTipoDocumento(rs.getString("tido_id"));
                 datosUsuario.setIdTipoUsuario(rs.getString("tius_id"));
-                datosUsuario.setEstado(rs.getString("usua_estado"));
-                datosUsuario.setMunicipio(rs.getString("muni_id"));
+                datosUsuario.setEstado(rs.getString("usua_estado"));                
                 datosUsuario.setFechaNacimiento(rs.getString("usua_fechanaci"));
                 datosUsuario.setNombre(rs.getString("usua_nombre") + " " + rs.getString("usua_apellido"));
                 datosUsuario.setDocumento(rs.getString("usua_documento"));
                 datosUsuario.setCelular(rs.getString("usua_celular"));
                 datosUsuario.setCorreo(rs.getString("usua_correo"));
-                datosUsuario.setGenero(rs.getString("gene_id"));
+                
                 datosUsuario.setUsuario(rs.getString("usse_usuario"));
                 datosUsuario.setRegistradoPor(rs.getString("usua_registradopor"));
                 listado.add(datosUsuario);
