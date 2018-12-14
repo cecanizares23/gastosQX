@@ -167,13 +167,14 @@
         ajaxGastos.listarTipoDocumento({
             callback: function(data) {
                 if (data !== null) {
+                    console.log("data ",data);
                     dwr.util.removeAllOptions("tipoDocumento");
                     dwr.util.addOptions("tipoDocumento", [{
                             id: '',
                             descripcion: 'Seleccione tipo de documento'
                         }], 'id', 'descripcion');
                     dwr.util.addOptions("tipoDocumento", data, 'id', 'descripcion');
-                    jQuery('#tipoDocumento option[value=1]').hide();
+                    //jQuery('#tipoDocumento option[value=1]').hide();
                 }
             },
             timeout: 20000

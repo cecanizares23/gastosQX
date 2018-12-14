@@ -76,14 +76,14 @@
 
     <body class="side_menu_active side_menu_expanded">
 
-        <div id="spinner" class="spinner">
+        <!--<div id="spinner" class="spinner">
             <div class="Spinner">
                 <div class="mascara"></div>
                 <div  class="imagenSpinner">
 
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!--Inicio Encabezado de las paginas -->
         <div id="panelPrincipal1">

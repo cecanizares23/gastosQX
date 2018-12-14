@@ -26,12 +26,14 @@ public class EnvioEmail {
 
     public static boolean sendFromGMail(String from, String pass, String[] to, String subject, String body) {
         Properties props = System.getProperties();
+        //String host = "smtp.live.com";
         String host = "smtp.gmail.com";
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.user", from);
         props.put("mail.smtp.password", pass);
         props.put("mail.smtp.port", "587");
+        //props.put("mail.smtp.port", "25");//465
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props);
@@ -53,7 +55,8 @@ public class EnvioEmail {
             message.setSubject(subject);
             message.setText(body);
             Transport transport = session.getTransport("smtp");
-            transport.connect(host, from, pass);
+            System.out.println("------------------- " + host + " " + from + " " + pass);
+            transport.connect(host, from, pass);            
             transport.sendMessage(message, message.getAllRecipients());
             System.out.print("Successfully Sent" + "\n");
 

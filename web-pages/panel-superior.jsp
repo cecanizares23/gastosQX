@@ -14,7 +14,7 @@
 
 <header id="main_header">
     <div class="container-fluid">
-        <div class="brand_section">
+        <div class="brand_section center-block">
             <a href="index.jsp"><img src="assets/img/logo2.png" alt="site_logo" width="63" height="26"></a>
         </div>
 

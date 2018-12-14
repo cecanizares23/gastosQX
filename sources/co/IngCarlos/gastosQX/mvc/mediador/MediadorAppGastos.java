@@ -55,6 +55,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpSession;
 import org.directwebremoting.WebContextFactory;
 import org.json.JSONObject;
+import util.ServicioEmail;
 
 /**
  *
@@ -128,14 +129,20 @@ public class MediadorAppGastos {
                         + "Nombre: " + datosUsuario1.getNombre() + "\n"
                         + "NIT: " + datosUsuario1.getDocumento() + "\n"
                         + "Correo: " + datosUsuario1.getCorreo() + "\n"
-                        + "Usuario: " + datosUsuario1.getUsuario() + "\n"
-                        + "Clave Medipin: " + datosUsuario1.getClave() + "\n\n"
-                        + "Para ingresar a la plataforma Medipin ingrese en el siguiente enlace: www.algo.com \n"
+                        + "Usuario: " + datosUsuarioSeguridad.getUsuario() + "\n"
+                        + "Clave Medipin: " + datosUsuarioSeguridad.getClave() + "\n\n"
+                        + "Para ingresar a la plataforma GastosQX ingrese en el siguiente enlace: www.algo.com \n"
                         + "Este correo se generÃ³ automÃ¡ticamente por lo tanto no se debe responder al mismo.";
-
+                
+                System.out.println("datosUsuario1 " + datosUsuario1.toStringJson());
+                System.out.println("TO " + to +"estado " + estado + "body " + body);
+                
+                //ServicioEmail s = new ServicioEmail(Constantes.CORREO, Constantes.CLAVE_CORREO);
                 boolean enviar = EnvioEmail.sendFromGMail(Constantes.CORREO, Constantes.CLAVE_CORREO, to, estado, body);
 
-                if (enviar == true) {
+               //s.enviarEmail(datosUsuario1.getCorreo(), estado, body);
+
+               if (enviar == true) {
                     conexion.commit();
                     registroExitoso.setCondicion(true);
                     registroExitoso.setMensaje("Registro Exitoso");
@@ -144,8 +151,8 @@ public class MediadorAppGastos {
                     conexion.rollback();
                     registroExitoso = null;
                     throw new Exception("Error ::: al enviar el email");
-                }
-
+                }            
+               
             } else {
                 conexion.rollback();
                 registroExitoso = null;

@@ -22,8 +22,11 @@ public class Constantes {
     public static final String ESTADO_ACTIVO = "1";
     public static final String ESTADO_INACTIVO = "0";
 
-    public static final String CORREO = "carlos.canizares@mbcolombia.com";
-    public static final String CLAVE_CORREO = "eduardo0223"; 
+    public static final String CORREO = "gastosqx@gmail.com";
+    //public static final String CLAVE_CORREO = "Gastosqx12"; 
+    public static final String CLAVE_CORREO = "xwzdzjsorddjqhgp";
+    //public static final String CORREO = "cecanizares@hotmail.com";
+    //public static final String CLAVE_CORREO = "eduardo0223"; 
 
     public static final boolean ENVIO_MENSAJE = true;
     public static final String RESPONSE_MENSAJE_REJECTED = "REJECTED";

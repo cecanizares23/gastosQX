@@ -50,26 +50,24 @@ public class UsuarioDAO {
         try {
             cadSQL = new StringBuilder();
 
-            cadSQL.append(" INSERT INTO usuario(tido_id, tius_id, usua_estado, muni_id, usua_fechanaci, usua_nombre, usua_apellido, gene_id,"
+            cadSQL.append(" INSERT INTO usuario(tido_id, tius_id, usua_estado,usua_fechanaci, usua_nombre, usua_apellido,"
                     + "usua_documento, usua_celular, usua_correo, usua_direccion, usua_telefono, usua_registradopor)");
-            cadSQL.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+            cadSQL.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
             AsignaAtributoStatement.setString(1, usuario1.getIdTipoDocumento(), ps);
             AsignaAtributoStatement.setString(2, usuario1.getTipoUsuario(), ps);
-            AsignaAtributoStatement.setString(3, usuario1.getEstado(), ps);
-            AsignaAtributoStatement.setString(4, usuario1.getMunicipio(), ps);
-            AsignaAtributoStatement.setString(5, usuario1.getFechaNacimiento(), ps);
-            AsignaAtributoStatement.setString(6, usuario1.getNombre(), ps);
-            AsignaAtributoStatement.setString(7, usuario1.getApellido(), ps);
-            AsignaAtributoStatement.setString(8, usuario1.getGenero(), ps);
-            AsignaAtributoStatement.setString(9, usuario1.getDocumento(), ps);
-            AsignaAtributoStatement.setString(10, usuario1.getCelular(), ps);
-            AsignaAtributoStatement.setString(11, usuario1.getCorreo(), ps);
-            AsignaAtributoStatement.setString(12, usuario1.getDireccion(), ps);
-            AsignaAtributoStatement.setString(13, usuario1.getTelefono(), ps);
-            AsignaAtributoStatement.setString(14, usuario, ps);
+            AsignaAtributoStatement.setString(3, usuario1.getEstado(), ps);            
+            AsignaAtributoStatement.setString(4, usuario1.getFechaNacimiento(), ps);
+            AsignaAtributoStatement.setString(5, usuario1.getNombre(), ps);
+            AsignaAtributoStatement.setString(6, usuario1.getApellido(), ps);            
+            AsignaAtributoStatement.setString(7, usuario1.getDocumento(), ps);
+            AsignaAtributoStatement.setString(8, usuario1.getCelular(), ps);
+            AsignaAtributoStatement.setString(9, usuario1.getCorreo(), ps);
+            AsignaAtributoStatement.setString(10, usuario1.getDireccion(), ps);
+            AsignaAtributoStatement.setString(11, usuario1.getTelefono(), ps);
+            AsignaAtributoStatement.setString(12, usuario, ps);
 
             nRows = ps.executeUpdate();
             if (nRows > 0) {
