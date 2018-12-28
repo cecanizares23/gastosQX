@@ -33,11 +33,11 @@
                         <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo" data-filter="#textFilter" data-page-size="5">
                             <thead>
                                 <tr>
-                                    <th data-toggle="true" class="footable-visible footable-first-column">DOCUMENTO</th>
-                                    <th data-toggle="true" class="footable-visible footable-first-column">NOMBRE</th>
-                                    <th data-toggle="true" class="footable-visible footable-first-column">CORREO</th>
-                                    <th data-toggle="true" class="footable-visible footable-first-column">USUARIO</th>
-                                    <th data-toggle="true" class="footable-visible footable-first-column">ESTADO</th> 
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">DOCUMENTO</th>
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">NOMBRE</th>
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">CORREO</th>
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">USUARIO</th>
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">ESTADO</th> 
                                     <th data-toggle="true" class="footable-visible footable-first-column">EDITAR</th>                                  
                                 </tr>
                             </thead>
@@ -60,9 +60,164 @@
     </div>
 </div>
 
+<form id="form_validation" name="form_validation" action="autocomplete:off" novalidate>
+    <div class="row">       
+
+        <div class="alert alert-danger" id="mensajeDocumento">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong>Ya hay un usuario registrado con este numero de documento!</strong>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_first_name" class="req">Nombres:</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
+                <input type="text" id="nombreUsuario" class="form-control" maxlength="50" onkeypress="return soloLetras(event);" required/>                
+            </div>            
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_last_name" class="req">Apellidos:</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
+                <input type="text" id="apellidoUsuario" class="form-control" maxlength="50" onkeypress="return soloLetras(event);" required/>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_first_name" class="req">Tipo Documento:</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="icon_id bs_ttip"></i></span>
+                <select id="tipoDocumento" class="form-control" required></select>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_last_name" class="req"># Documento:</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="icon_id-2 bs_ttip"></i></span>
+                <input type="text" id="documento" class="form-control" onkeypress="javascript:soloNumeros(event);" onblur="validaDocumento(this.value)" maxlength="12" required/>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_last_name" class="req">Fecha Nacimiento:</label>                                
+            <div class="input-group date" id="dp_component">
+                <span class="input-group-addon"><i class="icon_calendar"></i></span>
+                <input type="text" class="form-control" id="fechaNacimiento" disabled="true" required />                
+            </div>                                
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_last_name" class="req">Email:</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="icon_mail bs_ttip"></i></span>
+                <input type="email" id="email" class="form-control" required maxlength="50"/>
+            </div>
+        </div>        
+
+        <div class="col-md-6 form-group">            
+            <label for="val_last_name" class="req">Teléfono Movil:</label>
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                <input type="text" id="telefonoMovil" class="form-control" onkeypress="return soloNumeros(event);" maxlength="10" required/>
+            </div>
+        </div>        
+
+        <div class="col-md-6 form-group">
+            <label for="val_first_name" class="req">Estado:</label>
+            <div class="input-group date" >
+                <span class="input-group-addon"><i class="social_flickr_square bs_ttip"></i></span>
+                <select id="estado" class="form-control" required>                                    
+                    <option value="">-Seleccione uno-</option>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>                                    
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <label for="val_first_name" class="req">Tipo Usuario:</label>
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="icon_group bs_ttip"></i></span>
+                <select id="tipoUsuario" class="form-control" required></select>
+            </div>
+        </div>                                                
+
+        <div class="col-md-6 form-group">
+            <label for="val_last_name" class="req">Usuario:</label>
+            <div class="input-group date" id="dp_component">
+                <span class="input-group-addon"><i class="el-icon-torso bs_ttip"></i></span>
+                <input type="text" id="usuario" class="form-control" onkeypress="return soloLetras(event);" onblur="validaUsuario(this.value)" maxlength="11" required disabled="true"/> <!--onkeypress="return soloLetras()(event);"-->
+            </div>
+        </div>
+        
+        <div class="col-md-6 form-group" id="divIdUsuario">            
+            <label for="val_last_name" class="req">Teléfono Movil:</label>
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                <input type="text" id="idUsuario" class="form-control" onkeypress="return soloNumeros(event);" hidden="false" required/>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <div class="alert alert-danger" id="mensajeUsuario">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <strong>El usuario ya existe en la base de datos!</strong>
+            </div>
+        </div>
+
+
+        <div class="col-md-12 form-group"><br><br>
+            <div class="col-md-9 form-group"></div>
+            <div class="col-md-3 form-group">
+                <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
+                <a class="btn btn-primary" id="btnVolver" onclick="javascript:volver();">Volver</a>
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+            <div id="alert"></div>
+        </div>
+
+    </div>
+</form>
+
 <script>
     jQuery(document).ready(function () {
         listarUsuarios();
+        $("#form_validation").hide();
+
+        ajaxGastos.listarTipoDocumento({
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllOptions("tipoDocumento");
+                    dwr.util.addOptions("tipoDocumento", [{
+                            id: '',
+                            descripcion: 'Seleccione tipo de documento'
+                        }], 'id', 'descripcion');
+                    dwr.util.addOptions("tipoDocumento", data, 'id', 'descripcion');
+                    //jQuery('#tipoDocumento option[value=1]').hide();
+                }
+            },
+            timeout: 20000
+        });
+
+        ajaxGastos.listarCargos({
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllOptions("tipoUsuario");
+                    dwr.util.addOptions("tipoUsuario", [{
+                            id: '',
+                            descripcion: 'Seleccione cargo'
+                        }], 'id', 'descripcion');
+                    dwr.util.addOptions("tipoUsuario", data, 'id', 'descripcion');
+                }
+            },
+            timeout: 20000
+        });
+
     });
 
     var listadoUsuario = [];
@@ -80,14 +235,17 @@
             return data.usuario;
         },
         function (data) {
-            if (data.estado == 0) {
+            if (data.estado === 0) {
                 return "Inactivo";
-            } else if (data.estado == 1) {
+            } else if (data.estado === 1) {
                 return "Activo";
             }
         },
         function (data) {
-            return '<td><button id="btnEditar" class="btn-primary status-active" onclick="cargarPagina(\'' +  + '\');">Editar</button></td>';
+            if (data.id === "1")
+                return '<td><button id="btnEditar" class="btn-primary status-active" disabled="true" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
+            else
+                return '<td><button id="btnEditar" class="btn-primary status-active" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
         }
     ];
 
@@ -95,10 +253,16 @@
         ajaxGastos.listarUsuarios({
             callback: function (data) {
                 if (data !== null) {
-                    console.log("---- ", data);
                     //$("#tablaReportes").dataTable().fnDestroy();                    
                     dwr.util.removeAllRows("listado");
                     listadoUsuario = data;
+                    console.log("ingres");
+                    for (var i = 0; i < listadoUsuario.length; i++) {                        
+                        if (listadoUsuario[i].id === "1") {                        
+                            //$("#btnEditar").prop('disabled', true);
+                            $("#btnEditar").prop('disabled', true);
+                        }
+                    }
                     dwr.util.addRows("listado", listadoUsuario, mapaListadoUsuarios, {
                         escapeHtml: false
                     });
@@ -106,6 +270,95 @@
             },
             timeout: 20000
         });
+    }
+
+    function cargarEditar(id) {
+        $("#btnRegistrar").prop('disabled', false);
+        $("#form_validation").show();
+        $("#tablaReportes").hide();
+        $("#mensajeUsuario").hide();
+        $("#mensajeDocumento").hide();
+        $("#divIdUsuario").hide();
+        ajaxGastos.consultarUsuario(id, {
+            callback: function (data) {
+                if (data !== null) {                    
+                    $("#nombreUsuario").val(data.nombre);
+                    $("#apellidoUsuario").val(data.apellido);
+                    $("#tipoDocumento").val(data.tipoDocumento);
+                    $("#documento").val(data.documento);
+                    $("#fechaNacimiento").val(data.fechaNacimiento);
+                    $("#email").val(data.correo);
+                    $("#estado").val(data.estado);
+                    $("#tipoUsuario").val(data.idTipoUsuario);
+                    $("#usuario").val(data.usuario);
+                    $("#telefonoMovil").val(data.celular);
+                    $("#idUsuario").val(id);
+                }
+            },
+            timeout: 20000
+        });
+    }
+    
+    function editarUsuarios() {
+        
+        var usuarioSeguridad = {
+            usuario: jQuery("#usuario").val()            
+        };
+        var usuario = {
+            nombre: jQuery("#nombreUsuario").val(),
+            apellido: jQuery("#apellidoUsuario").val(),
+            idTipoDocumento: jQuery("#tipoDocumento").val(),
+            documento: jQuery("#documento").val(),
+            correo: jQuery("#email").val(),
+            fechaNacimiento: jQuery("#fechaNacimiento").val(),
+            estado: jQuery("#estado").val(),
+            idTipoUsuario: jQuery("#tipoUsuario").val(),           
+            celular: jQuery("#telefonoMovil").val(),
+            id: jQuery("#idUsuario").val()            
+        };        
+
+        //validaUsuario();
+
+        ajaxGastos.editarUsuario(usuario, usuarioSeguridad, {
+            callback: function(data) {
+
+                if (data !== null) {
+                    notificacion("success", "el usuario se ha editado con éxito", "alert");
+                    limpiarFormularioRegistro();
+                    $("#btnVolver").click();
+                } else {
+                    notificacion("danger", "se ha generado un error", "alert");
+                }
+            },
+            timeout: 20000
+        });
+        //desactivar();        
+    }
+
+    function volver() {
+        $("#form_validation").hide();
+        $("#tablaReportes").show();
+        listarUsuarios();
+    }
+    
+     function limpiarFormularioRegistro() {
+        jQuery("#nombreUsuario").val("");
+        jQuery("#apellidoUsuario").val("");
+        jQuery("#tipoDocumento").val("");
+        jQuery("#documento").val("");
+        jQuery("#email").val("");
+        jQuery("#fechaNacimiento").val("");
+        jQuery("#estado").val("");
+        jQuery("#tipoUsuario").val("");        
+        jQuery("#genero").val("");
+        jQuery("#telefonoMovil").val("");
+        jQuery("#direccion").val("");
+        jQuery("#telefonoFijo").val("");
+        jQuery("#direccion2").val("");
+        jQuery("#usuario").val("");
+        jQuery("#contrasenia").val("");
+        jQuery("#contrasenia1").val("");
+        $("#btnRegistrar").prop('disabled', false);
     }
 
     function notificacion(tipo, msj, id) {
@@ -140,7 +393,7 @@
             },
             submitHandler: function () {
 
-                ejecutarPostValidate();
+                editarUsuarios();
 
             }
 

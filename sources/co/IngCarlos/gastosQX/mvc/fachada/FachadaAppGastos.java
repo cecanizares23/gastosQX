@@ -125,7 +125,8 @@ public class FachadaAppGastos {
      * @return
      */
     @RemoteMethod
-    public RegistroDTO editarUsuario(UsuarioDTO datosUsuario, UsuarioSeguridadDTO datosUsuarioSeguridad) {        
+    public RegistroDTO editarUsuario(UsuarioDTO datosUsuario, UsuarioSeguridadDTO datosUsuarioSeguridad) {   
+        System.out.println("entra fachada");
         return MediadorAppGastos.getInstancia().editarUsuario(datosUsuario, datosUsuarioSeguridad);
 
     }

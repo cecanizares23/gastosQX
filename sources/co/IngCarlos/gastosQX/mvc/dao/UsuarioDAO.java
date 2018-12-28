@@ -101,24 +101,20 @@ public class UsuarioDAO {
         try {
             cadSQL = new StringBuilder();
 
-            cadSQL.append(" UPDATE usuario SET tido_id = ?, tius_id = ?, usua_estado = ?, muni_id = ?, usua_fechanaci = ?, usua_nombre = ?,"
-                    + " usua_apellido = ?, gene_id = ?, usua_documento = ?, usua_celular = ?, usua_correo = ?, usua_direccion = ?, usua_telefono = ? WHERE  usua_id = ?");
+            cadSQL.append(" UPDATE usuario SET tido_id = ?, tius_id = ?, usua_estado = ?, usua_fechanaci = ?, usua_nombre = ?,"
+                    + " usua_apellido = ?, usua_documento = ?, usua_celular = ?, usua_correo = ? WHERE  usua_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datos.getIdTipoDocumento(), ps);
             AsignaAtributoStatement.setString(2, datos.getIdTipoUsuario(), ps);
-            AsignaAtributoStatement.setString(3, datos.getEstado(), ps);
-            AsignaAtributoStatement.setString(4, datos.getMunicipio(), ps);
-            AsignaAtributoStatement.setString(5, datos.getFechaNacimiento(), ps);
-            AsignaAtributoStatement.setString(6, datos.getNombre(), ps);
-            AsignaAtributoStatement.setString(7, datos.getApellido(), ps);
-            AsignaAtributoStatement.setString(8, datos.getGenero(), ps);
-            AsignaAtributoStatement.setString(9, datos.getDocumento(), ps);
-            AsignaAtributoStatement.setString(10, datos.getCelular(), ps);
-            AsignaAtributoStatement.setString(11, datos.getCorreo(), ps);
-            AsignaAtributoStatement.setString(12, datos.getDireccion(), ps);
-            AsignaAtributoStatement.setString(13, datos.getTelefono(), ps);
-            AsignaAtributoStatement.setString(14, datos.getId(), ps);
+            AsignaAtributoStatement.setString(3, datos.getEstado(), ps);            
+            AsignaAtributoStatement.setString(4, datos.getFechaNacimiento(), ps);
+            AsignaAtributoStatement.setString(5, datos.getNombre(), ps);
+            AsignaAtributoStatement.setString(6, datos.getApellido(), ps);            
+            AsignaAtributoStatement.setString(7, datos.getDocumento(), ps);
+            AsignaAtributoStatement.setString(8, datos.getCelular(), ps);
+            AsignaAtributoStatement.setString(9, datos.getCorreo(), ps);            
+            AsignaAtributoStatement.setString(10, datos.getId(), ps);
             nRows = ps.executeUpdate();
             if (nRows > 0) {
                 registroExitoso = true;
@@ -163,8 +159,7 @@ public class UsuarioDAO {
                 datosUsuario.setNombre(rs.getString("usua_nombre") + " " + rs.getString("usua_apellido"));
                 datosUsuario.setDocumento(rs.getString("usua_documento"));
                 datosUsuario.setCelular(rs.getString("usua_celular"));
-                datosUsuario.setCorreo(rs.getString("usua_correo"));
-                
+                datosUsuario.setCorreo(rs.getString("usua_correo"));                
                 datosUsuario.setUsuario(rs.getString("usse_usuario"));
                 datosUsuario.setRegistradoPor(rs.getString("usua_registradopor"));
                 listado.add(datosUsuario);
@@ -255,11 +250,9 @@ public class UsuarioDAO {
         try {
             cadSQL = new StringBuilder();
             cadSQL.append(" SELECT us.usse_usuario, us.usse_clave, usu.usua_nombre, usu.usua_documento, usu.tido_id, usu.tius_id, usu.usua_celular, usu.usua_correo, ");
-            cadSQL.append(" usu.usua_apellido, tius.tius_descripcion ");
+            cadSQL.append(" usu.usua_apellido, tius.tius_descripcion, usu.usua_fechanaci, usu.usua_estado ");
             cadSQL.append(" FROM usuario usu ");
-            cadSQL.append(" INNER JOIN usuario_seguridad us ON usu.usua_id = us.usua_id ");
-            cadSQL.append(" INNER JOIN municipio mun ON mun.muni_id = usu.muni_id ");
-            cadSQL.append(" INNER JOIN departamento dep ON dep.depa_id = mun.depa_id ");
+            cadSQL.append(" INNER JOIN usuario_seguridad us ON usu.usua_id = us.usua_id ");           
             cadSQL.append(" INNER JOIN tipo_usuario tius ON usu.tius_id = tius.tius_id ");
             cadSQL.append(" WHERE usu.usua_id = ? ");
             ps = conexion.prepareStatement(cadSQL.toString());
@@ -277,6 +270,8 @@ public class UsuarioDAO {
                 datos.setCorreo(rs.getString("usua_correo"));
                 datos.setApellido(rs.getString("usua_apellido"));
                 datos.setRol(rs.getString("tius_descripcion"));
+                datos.setFechaNacimiento(rs.getString("usua_fechanaci"));
+                datos.setEstado(rs.getString("usua_estado"));
             }
             ps.close();
             ps = null;

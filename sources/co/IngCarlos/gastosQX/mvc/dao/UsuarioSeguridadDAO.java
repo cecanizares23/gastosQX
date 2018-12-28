@@ -299,7 +299,7 @@ public class UsuarioSeguridadDAO {
         boolean registroExitoso = false;
 
         try {
-
+            System.out.println("llega dao usse_usuario");
             cadSQL = new StringBuilder();
             cadSQL.append("UPDATE usuario_seguridad SET usse_usuario = ?  WHERE  usua_id = ?");
 

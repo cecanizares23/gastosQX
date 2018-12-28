@@ -123,7 +123,7 @@ public class MediadorAppGastos {
             if (registroUsuario != false && registroUsuarioSeguridad != false) {
 
                 String[] to = {datosUsuario1.getCorreo()};
-                String estado = "CONFIRMACIÃ“N: SE CREÃ“ LA CUENTA EN LA PLATAFORMA CNK";
+                String estado = "CONFIRMACIÓN: SE CREÓ LA CUENTA EN LA PLATAFORMA CNK";
                 String body = "Cordial Saludo.\n\n\n"
                         + "En el presente correo se confirma el registro en la plataforma Medipin, con los siguientes datos: \n\n"
                         + "Nombre: " + datosUsuario1.getNombre() + "\n"
@@ -260,8 +260,7 @@ public class MediadorAppGastos {
 
             datos = new UsuarioDAO().consultarUsuario(conexion, idUsuario);
             //String fecha = Formato.formatoFechaMostrar(datos.getFechaNacimiento());            
-            datos.setFechaNacimiento(datos.getFechaNacimiento());
-
+            datos.setFechaNacimiento(Formato.formatoFechaMostrar(datos.getFechaNacimiento()));            
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -411,6 +410,7 @@ public class MediadorAppGastos {
             registroExitoso = new RegistroDTO();
             String fecha = Formato.formatoFecha(datosUsuario1.getFechaNacimiento());
             datosUsuario1.setFechaNacimiento(fecha);
+            System.out.println("mediador ::: " + datosUsuario1.toStringJson() + " ::: " + datosUsuarioSeguridad.toStringJson());
 
             if (!"".equals(datosUsuario1.getId())) {
                 editarUsuario = new UsuarioDAO().editarUsuario(conexion, datosUsuario1);
