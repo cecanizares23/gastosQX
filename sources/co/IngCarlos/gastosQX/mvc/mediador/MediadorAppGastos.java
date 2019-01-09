@@ -6,7 +6,6 @@
  * Copyright 2018 by Ing. Carlos Cañizares
  * All rights reserved
  */
-
 package co.IngCarlos.gastosQX.mvc.mediador;
 
 import co.IngCarlos.gastosQX.common.connection.ContextDataResourceNames;
@@ -17,12 +16,16 @@ import co.IngCarlos.gastosQX.common.util.Formato;
 import co.IngCarlos.gastosQX.common.util.Generales;
 import co.IngCarlos.gastosQX.common.util.LoggerMessage;
 import co.IngCarlos.gastosQX.mvc.dao.DatosUsuarioDAO;
+import co.IngCarlos.gastosQX.mvc.dao.EspecialidadDAO;
+import co.IngCarlos.gastosQX.mvc.dao.MedicoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoDocumentoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.UsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.UsuarioSeguridadDAO;
 import co.IngCarlos.gastosQX.mvc.dto.BodyMensajeDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
+import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
+import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RespuestaDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoDocumentoDTO;
@@ -123,7 +126,7 @@ public class MediadorAppGastos {
             if (registroUsuario != false && registroUsuarioSeguridad != false) {
 
                 String[] to = {datosUsuario1.getCorreo()};
-                String estado = "CONFIRMACIÓN: SE CREÓ LA CUENTA EN LA PLATAFORMA CNK";
+                String estado = "CONFIRMACIÓN: SE CREÓ LA CUENTA EN LA PLATAFORMA Gastos QX CSJ";
                 String body = "Cordial Saludo.\n\n\n"
                         + "En el presente correo se confirma el registro en la plataforma Medipin, con los siguientes datos: \n\n"
                         + "Nombre: " + datosUsuario1.getNombre() + "\n"
@@ -133,16 +136,15 @@ public class MediadorAppGastos {
                         + "Clave Medipin: " + datosUsuarioSeguridad.getClave() + "\n\n"
                         + "Para ingresar a la plataforma GastosQX ingrese en el siguiente enlace: www.algo.com \n"
                         + "Este correo se generÃ³ automÃ¡ticamente por lo tanto no se debe responder al mismo.";
-                
+
                 System.out.println("datosUsuario1 " + datosUsuario1.toStringJson());
-                System.out.println("TO " + to +"estado " + estado + "body " + body);
-                
+                System.out.println("TO " + to + "estado " + estado + "body " + body);
+
                 //ServicioEmail s = new ServicioEmail(Constantes.CORREO, Constantes.CLAVE_CORREO);
                 boolean enviar = EnvioEmail.sendFromGMail(Constantes.CORREO, Constantes.CLAVE_CORREO, to, estado, body);
 
-               //s.enviarEmail(datosUsuario1.getCorreo(), estado, body);
-
-               if (enviar == true) {
+                //s.enviarEmail(datosUsuario1.getCorreo(), estado, body);
+                if (enviar == true) {
                     conexion.commit();
                     registroExitoso.setCondicion(true);
                     registroExitoso.setMensaje("Registro Exitoso");
@@ -151,8 +153,8 @@ public class MediadorAppGastos {
                     conexion.rollback();
                     registroExitoso = null;
                     throw new Exception("Error ::: al enviar el email");
-                }            
-               
+                }
+
             } else {
                 conexion.rollback();
                 registroExitoso = null;
@@ -260,7 +262,7 @@ public class MediadorAppGastos {
 
             datos = new UsuarioDAO().consultarUsuario(conexion, idUsuario);
             //String fecha = Formato.formatoFechaMostrar(datos.getFechaNacimiento());            
-            datos.setFechaNacimiento(Formato.formatoFechaMostrar(datos.getFechaNacimiento()));            
+            datos.setFechaNacimiento(Formato.formatoFechaMostrar(datos.getFechaNacimiento()));
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -496,7 +498,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @return
@@ -1180,5 +1182,356 @@ public class MediadorAppGastos {
         return respuesta;
     }
 
+    /**
+     *
+     * @param datosMedico
+     * @return
+     */
+    public boolean registrarMedico(MedicoDTO datosMedico) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new MedicoDAO().registrarMedico(conexion, datosMedico, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param datosMedico
+     * @return
+     */
+    public boolean actualizarMedico(MedicoDTO datosMedico) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new MedicoDAO().actualizarMedico(conexion, datosMedico, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean eliminarMedico(String id) {
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean deleteExitoso = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            deleteExitoso = new MedicoDAO().eliminarMedico(conexion, id, Constantes.ESTADO_INACTIVO);
+
+            conexion.close();
+            conexion = null;
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            deleteExitoso = false;
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                deleteExitoso = false;
+            }
+        }
+        return deleteExitoso;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<MedicoDTO> listarMedicos() {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<MedicoDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new MedicoDAO().listarMedicos(conexion);
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+
+    /**
+     *
+     * @return @param id
+     */
+    public MedicoDTO ConsultarMedicoXId(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        MedicoDTO datos = null;
+
+        try {
+            HttpSession session = WebContextFactory.get().getSession();
+            DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            datos = new MedicoDAO().ConsultarMedicoXId(conexion, id);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+
+        return datos;
+    }    
+
+    /**
+     * 
+     * @param datosEspecialidad
+     * @return 
+     */
+    public boolean registrarEspecialidad(EspecialidadDTO datosEspecialidad) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new EspecialidadDAO().registrarEspecialidad(conexion, datosEspecialidad, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     * 
+     * @param datosEspecialidad
+     * @return 
+     */
+    public boolean actualizarEspecialidad(EspecialidadDTO datosEspecialidad) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new EspecialidadDAO().actualizarEspecialidad(conexion, datosEspecialidad, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public ArrayList<EspecialidadDTO> listarTodasEspecialidades() {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<EspecialidadDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new EspecialidadDAO().listarTodasEspecialidades(conexion, Constantes.ESTADO_ACTIVO);
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean eliminarEspecialidad(String id) {
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean deleteExitoso = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            deleteExitoso = new EspecialidadDAO().eliminarEspecialidad(conexion, id);
+
+            conexion.close();
+            conexion = null;
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            deleteExitoso = false;
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                deleteExitoso = false;
+            }
+        }
+        return deleteExitoso;
+    }
+    
+    /**
+     * 
+     * @param datosMedico
+     * @return 
+     */
+    public boolean validarDocumentoMedico(MedicoDTO datosMedico) {
+
+        HttpSession session = WebContextFactory.get().getSession();
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+
+        boolean validarUsuario = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+
+            validarUsuario = new MedicoDAO().validarDocumentoMedico(conexion, datosMedico);
+
+            if (validarUsuario) {
+                conexion.commit();
+
+            } else {
+                conexion.rollback();
+            }
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return validarUsuario;
+    }
 
 }

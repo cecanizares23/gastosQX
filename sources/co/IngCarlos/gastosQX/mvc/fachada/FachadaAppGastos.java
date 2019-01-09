@@ -6,10 +6,11 @@
  * Copyright 2018 by Ing. Carlos Cañizares
  * All rights reserved
  */
-
 package co.IngCarlos.gastosQX.mvc.fachada;
 
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
+import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
+import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoDocumentoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoUsuarioDTO;
@@ -20,8 +21,6 @@ import java.util.ArrayList;
 import org.directwebremoting.annotations.RemoteMethod;
 import org.directwebremoting.annotations.RemoteProxy;
 import org.directwebremoting.annotations.ScriptScope;
-
-
 
 /**
  *
@@ -125,7 +124,7 @@ public class FachadaAppGastos {
      * @return
      */
     @RemoteMethod
-    public RegistroDTO editarUsuario(UsuarioDTO datosUsuario, UsuarioSeguridadDTO datosUsuarioSeguridad) {   
+    public RegistroDTO editarUsuario(UsuarioDTO datosUsuario, UsuarioSeguridadDTO datosUsuarioSeguridad) {
         System.out.println("entra fachada");
         return MediadorAppGastos.getInstancia().editarUsuario(datosUsuario, datosUsuarioSeguridad);
 
@@ -150,10 +149,6 @@ public class FachadaAppGastos {
     public boolean inactivarEstadoUsuario(String idUsuario) {
         return MediadorAppGastos.getInstancia().inactivarEstadoUsuario(idUsuario);
     }
-
-    
-
-   
 
     /**
      *
@@ -241,7 +236,7 @@ public class FachadaAppGastos {
         return MediadorAppGastos.getInstancia().cambiarContrasenia(datosUsuarioSeguridad);
 
     }
-    
+
     /**
      *
      * @param datosUsuario
@@ -260,5 +255,122 @@ public class FachadaAppGastos {
     public ArrayList<TipoUsuarioDTO> listarCargos() {
         return MediadorAppGastos.getInstancia().listarCargos();
     }
-    
+
+    /**
+     *
+     * @param datosTipoUsuario
+     * @return
+     */
+    @RemoteMethod
+    public boolean registrarCargo(TipoUsuarioDTO datosTipoUsuario) {
+        return MediadorAppGastos.getInstancia().registrarCargo(datosTipoUsuario);
+    }
+
+    /**
+     *
+     * @param datosTipoUsuario
+     * @return
+     */
+    @RemoteMethod
+    public boolean actualizarCargo(TipoUsuarioDTO datosTipoUsuario) {
+        return MediadorAppGastos.getInstancia().actualizarCargo(datosTipoUsuario);
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RemoteMethod
+    public boolean eliminarCargo(String id) {
+        return MediadorAppGastos.getInstancia().eliminarCargo(id);
+    }
+
+    /**
+     *
+     * @param datosMedico
+     * @return
+     */
+    @RemoteMethod
+    public boolean registrarMedico(MedicoDTO datosMedico) {
+        return MediadorAppGastos.getInstancia().registrarMedico(datosMedico);
+    }
+
+    /**
+     *
+     * @param datosMedico
+     * @return
+     */
+    @RemoteMethod
+    public boolean actualizarMedico(MedicoDTO datosMedico) {
+        return MediadorAppGastos.getInstancia().actualizarMedico(datosMedico);
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RemoteMethod
+    public boolean eliminarMedico(String id) {
+        return MediadorAppGastos.getInstancia().eliminarMedico(id);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<MedicoDTO> listarMedicos() {
+        return MediadorAppGastos.getInstancia().listarMedicos();
+    }
+
+    /**
+     *
+     * @param datosEspecialidad
+     * @return
+     */
+    @RemoteMethod
+    public boolean registrarEspecialidad(EspecialidadDTO datosEspecialidad) {
+        return MediadorAppGastos.getInstancia().registrarEspecialidad(datosEspecialidad);
+    }
+
+    /**
+     *
+     * @param datosEspecialidad
+     * @return
+     */
+    @RemoteMethod
+    public boolean actualizarEspecialidad(EspecialidadDTO datosEspecialidad) {
+        return MediadorAppGastos.getInstancia().actualizarEspecialidad(datosEspecialidad);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<EspecialidadDTO> listarTodasEspecialidades() {
+        return MediadorAppGastos.getInstancia().listarTodasEspecialidades();
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RemoteMethod
+    public boolean eliminarEspecialidad(String id) {
+        return MediadorAppGastos.getInstancia().eliminarEspecialidad(id);
+    }
+
+    /**
+     *
+     * @param datosMedico
+     * @return
+     */
+    @RemoteMethod
+    public boolean validarDocumentoMedico(MedicoDTO datosMedico) {
+        return MediadorAppGastos.getInstancia().validarDocumentoMedico(datosMedico);
+    }
 }
