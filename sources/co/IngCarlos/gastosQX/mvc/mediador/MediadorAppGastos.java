@@ -1532,6 +1532,62 @@ public class MediadorAppGastos {
             }
         }
         return validarUsuario;
+    }   
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public boolean activarEstadoMedico(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new MedicoDAO().activarEstadoMedico(conexion, id, Constantes.ESTADO_ACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public boolean inactivarEstadoMedico(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new MedicoDAO().inactivarEstadoMedico(conexion, id, Constantes.ESTADO_INACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
     }
 
 }

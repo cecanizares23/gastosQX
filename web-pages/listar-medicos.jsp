@@ -38,7 +38,7 @@
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">CORREO</th>
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">CELULAR</th>
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">ESTADO</th> 
-                                    <th data-toggle="true" class="footable-visible footable-first-column">EDITAR</th>                                  
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">EDITAR</th>                                  
                                 </tr>
                             </thead>
                             <tbody id="listado">
@@ -127,7 +127,7 @@
         <div class="col-md-6 form-group">            
             <label for="val_last_name" class="req">Direccion residencia:</label>
             <div class="input-group date">
-                <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                <span class="input-group-addon"><i class="el-icon-home bs_ttip"></i></span>
                 <input type="text" id="direccion" class="form-control" required/>
             </div>
         </div>        
@@ -147,16 +147,24 @@
         <div class="col-md-6 form-group">
             <label for="val_first_name" class="req">Especialidad:</label>
             <div class="input-group date">
-                <span class="input-group-addon"><i class="icon_group bs_ttip"></i></span>
+                <span class="input-group-addon"><i class="el-icon-universal-access bs_ttip"></i></span>
                 <select id="especialidad" class="form-control" required></select>
             </div>
-        </div>                                                                        
+        </div>   
+        
+        <div class="col-md-6 form-group" id="divIdMedico">            
+            <label for="val_last_name" class="req">Teléfono Movil:</label>
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                <input type="text" id="idMedico" class="form-control" onkeypress="return soloNumeros(event);" hidden="false" required/>
+            </div>
+        </div>
 
         <div class="col-md-12 form-group"><br><br>
             <div class="col-md-9 form-group"></div>
             <div class="col-md-3 form-group">
                 <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
-                <a class="btn btn-primary" onclick="javascript:cargarPagina('listar-usuarios.jsp');">Volver</a>
+                <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('listar-medicos.jsp');">Volver</a>
             </div>
 
         </div>        
@@ -184,7 +192,7 @@
             timeout: 20000
         });
 
-         ajaxGastos.listarTodasEspecialidades({
+        ajaxGastos.listarTodasEspecialidades({
             callback: function (data) {
                 if (data !== null) {
                     dwr.util.removeAllOptions("especialidad");
@@ -199,33 +207,34 @@
         });
 
     });
-    
-     var listadoMedicos = [];
+
+    var listadoMedicos = [];
     var mapaListadoMedicos = [
         function (data) {
-            return data.cedula;
+            return '<div class="text-center"><td>' + data.cedula + '</td></div>';
         },
         function (data) {
-            return data.nombres;
+            return '<div class="text-center"><td>' + data.nombres + '</td></div>';
         },
         function (data) {
-            return data.email;
+            return '<div class="text-center"><td>' + data.email + '</td></div>';
         },
         function (data) {
-            return data.celular;
+            return '<div class="text-center"><td>' + data.celular + '</td></div>';
         },
         function (data) {
-            if (data.estado === 0) {
-                return "Inactivo";
-            } else if (data.estado === 1) {
-                return "Activo";
+            if (data.estado == 0) {
+                return '<div class="text-center"><td><button class="btn btn-success status-active" onclick="activarMedico(' + data.id + ')">Activar</button></td></div>';
+            }
+            if (data.estado == 1) {
+                return '<div class="text-center"><td><button class="btn btn-danger status-active" onclick="inactivarMedico(' + data.id + ')">Inactivar</button></td></div>';
             }
         },
         function (data) {
-            if (data.id === "1")
-                return '<td><button id="btnEditar" class="btn-primary status-active" disabled="true" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
+            if (data.estado === "0")
+                return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" disabled onclick="cargarEditarMedico(' + data.id + ');">Editar</button></td></div>';
             else
-                return '<td><button id="btnEditar" class="btn-primary status-active" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
+                return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" onclick="cargarEditarMedico(' + data.id + ');">Editar</button></td></div>';
         }
     ];
 
@@ -236,7 +245,7 @@
                     //$("#tablaReportes").dataTable().fnDestroy();                    
                     dwr.util.removeAllRows("listado");
                     listadoMedicos = data;
-                    console.log("ingres");                    
+                    console.log("ingres");
                     dwr.util.addRows("listado", listadoMedicos, mapaListadoMedicos, {
                         escapeHtml: false
                     });
@@ -245,4 +254,213 @@
             timeout: 20000
         });
     }
+
+    function activarMedico(id) {
+        ajaxGastos.activarEstadoMedico(id, {
+            callback: function (data) {
+                if (data) {
+                    listarMedicos();
+                    //cargarPagina('listar-medicos.jsp');
+                } else {
+                    notificacion("danger", "No se pudo actualizar el estado.", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function inactivarMedico(id) {
+        ajaxGastos.inactivarEstadoMedico(id, {
+            callback: function (data) {
+                if (data) {
+                    listarMedicos();
+                    //cargarPagina('listar-medicos.jsp');
+                } else {
+                    notificacion("danger", "No se pudo actualizar el estado.", "alert");
+                }
+            },
+            timeout: 20000
+        });
+
+    }
+
+    function cargarEditarMedico(id) {
+        $("#btnRegistrar").prop('disabled', false);
+        $("#form_validation").show();
+        $("#tablaReportes").hide();
+        $("#mensajeUsuario").hide();
+        $("#mensajeDocumento").hide();
+        $("#divIdMedico").hide();
+        ajaxGastos.ConsultarMedicoXId(id, {
+            callback: function (data) {
+                if (data !== null) {
+                    $("#nombreMedico").val(data.nombres);
+                    $("#apellidoMedico").val(data.apellidos);
+                    $("#tipoDocumento").val(data.idTipoDocumento);
+                    $("#documento").val(data.cedula);
+                    $("#email").val(data.email);
+                    $("#estado").val(data.estado);
+                    $("#telefonoMovil").val(data.celular);
+                    $("#especialidad").val(data.idEspecialidad);
+                    $("#direccion").val(data.direccion);
+                    $("#idMedico").val(data.id);
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    
+    function editarMedico() {
+        $("#btnRegistrar").prop('disabled', true);
+        var medico = {
+            nombres: jQuery("#nombreMedico").val(),
+            apellidos: jQuery("#apellidoMedico").val(),
+            idTipoDocumento: jQuery("#tipoDocumento").val(),
+            cedula: jQuery("#documento").val(),
+            email: jQuery("#email").val(),
+            direccion: jQuery("#direccion").val(),
+            estado: jQuery("#estado").val(),
+            celular: jQuery("#telefonoMovil").val(),
+            idEspecialidad: jQuery("#especialidad").val(),
+            id: jQuery("#idMedico").val()
+        };
+
+        //validaUsuario();        
+        ajaxGastos.actualizarMedico(medico, {
+            callback: function (data) {
+                if (data !== null) {
+                    notificacion("success", "el Medico se ha registrado con éxito", "alert");
+                    limpiarFormularioRegistro();
+                    setTimeout('$("#btnVolver").click();','2000');
+                } else {
+                    notificacion("danger", "se ha generado un error", "alert");
+                }
+            },
+            timeout: 20000
+        });
+        //desactivar();        
+    }
+
+    function limpiarFormularioRegistro() {
+        jQuery("#nombreMedico").val("");
+        jQuery("#apellidoMedico").val("");
+        jQuery("#tipoDocumento").val("");
+        jQuery("#documento").val("");
+        jQuery("#email").val("");
+        jQuery("#telefonoMovil").val("");
+        jQuery("#direccion").val("");
+        jQuery("#estado").val("");
+        jQuery("#especialidad").val("");
+        $("#btnRegistrar").prop('disabled', false);
+    }
+
+    function notificacion(tipo, msj, id) {
+        $(".alert").alert('close');
+        $("#" + id).append('<div class="alert alert-' + tipo + '" role="alert">\n\
+                                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n\
+                                               <span aria-hidden="true">&times;</span>\n\
+                                           </button>' + msj + '\n\
+                                       </div>');
+        setTimeout('$(".alert").alert("close");', '10000');
+    }
+
+    var nextFunction = null;
+    function validar(formulario) {
+        nextFunction = 1;
+        $('#' + formulario).validate({
+            highlight: function (label) {
+                jQuery(label).closest('.form-group').removeClass('has-success').addClass('has-error');
+            },
+            success: function (label) {
+                jQuery(label).closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                var placement = element.closest('.input-group');
+                if (!placement.get(0)) {
+                    placement = element;
+                }
+                if (error.text() !== '') {
+                    placement.after(error);
+                }
+            },
+            submitHandler: function () {
+
+                editarMedico();
+
+            }
+
+        });
+    }
+
+    function ejecutarPostValidate() {
+        if (nextFunction == 1) {
+            listarReporte();
+        }
+        nextFunction = null;
+
+    }
+
+    $(function () {
+        // select2
+        yukon_select2.p_forms_extended();
+        // datepicker
+        yukon_datepicker.p_forms_extended();
+        // date range picker
+        yukon_date_range_picker.p_forms_extended();
+        // rangeSlider
+        yukon_rangeSlider.p_forms_extended();
+        // textarea autosize
+        yukon_textarea_autosize.init();
+        // masked inputs
+        yukon_maskedInputs.p_forms_extended();
+        // maxlength for textareas
+        yukon_textarea_maxlength.p_forms_extended();
+        // multiuploader
+        yukon_uploader.p_forms_extended();
+        // 2col multiselect
+        yukon_2col_multiselect.init();
+        // clock picker
+        yukon_clock_picker.init();
+        // chained selects
+        yukon_chained_selects.init();
+        // password show/hide
+        yukon_pwd_show_hide.init();
+        // password strength metter
+        yukon_pwd_strength_metter.init();
+        // checkboxes & radio buttons
+        yukon_icheck.init();
+        // selectize.js
+        yukon_selectize.p_forms_extended();
+        // wysiwg editor
+        yukon_wysiwg.p_forms_extended();
+    });
+
+    $(function () {
+        // wysiwg editor
+        yukon_wysiwg.p_forms_validation();
+        // multiselect
+        yukon_select2.p_forms_validation();
+        // validation
+        yukon_parsley_validation.p_forms_validation();
+    });
+
+    function soloNumeros(e) {
+        console.log("entra a la funcion");
+        var key = e.which || e.keyCode;
+        console.log("key", key);
+        if ((key < 48 && key != 8) || key > 57) {
+            e.preventDefault();
+        }
+    }
+
+    function soloLetras(e) {
+        var key = e.which || e.keyCode;
+        console.log("key", key);
+        if ((key < 63 && key != 8 && key != 32) || key > 122) {
+            e.preventDefault();
+        }
+    }
+    
 </script>

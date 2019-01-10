@@ -38,7 +38,7 @@
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">CORREO</th>
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">USUARIO</th>
                                     <th data-toggle="true" class="footable-visible footable-first-column text-center">ESTADO</th> 
-                                    <th data-toggle="true" class="footable-visible footable-first-column">EDITAR</th>                                  
+                                    <th data-toggle="true" class="footable-visible footable-first-column text-center">EDITAR</th>                                  
                                 </tr>
                             </thead>
                             <tbody id="listado">
@@ -151,7 +151,7 @@
                 <input type="text" id="usuario" class="form-control" onkeypress="return soloLetras(event);" onblur="validaUsuario(this.value)" maxlength="11" required disabled="true"/> <!--onkeypress="return soloLetras()(event);"-->
             </div>
         </div>
-        
+
         <div class="col-md-6 form-group" id="divIdUsuario">            
             <label for="val_last_name" class="req">Teléfono Movil:</label>
             <div class="input-group date">
@@ -223,29 +223,39 @@
     var listadoUsuario = [];
     var mapaListadoUsuarios = [
         function (data) {
-            return data.documento;
+            return '<div class="text-center"><td>' + data.documento + '</td></div>';
         },
         function (data) {
-            return data.nombre;
+            return '<div class="text-center"><td>' + data.nombre + '</td></div>';
         },
         function (data) {
-            return data.correo;
+            return '<div class="text-center"><td>' + data.correo + '</td></div>';
         },
         function (data) {
-            return data.usuario;
+            return '<div class="text-center"><td>' + data.usuario + '</td></div>';
         },
         function (data) {
-            if (data.estado === 0) {
-                return "Inactivo";
-            } else if (data.estado === 1) {
-                return "Activo";
+            if (data.estado == 0) {
+                return '<div class="text-center"><td><button class="btn btn-success status-active" onclick="activarUsuario(' + data.id + ')">Activar</button></td></div>';
+            }
+            if (data.estado == 1) {
+                if (data.id > 1) {
+                    return '<div class="text-center"><td><button class="btn btn-danger status-active" onclick="inactivarUsuario(' + data.id + ')">Inactivar</button></td></div>';
+                } else {
+                    return '<div class="text-center"><td><button class="btn btn-danger status-active" disabled onclick="inactivarUsuario(' + data.id + ')">Inactivar</button></td></div>';
+                }
+
             }
         },
         function (data) {
             if (data.id === "1")
-                return '<td><button id="btnEditar" class="btn-primary status-active" disabled="true" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
+                return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" disabled="true" onclick="cargarEditar(' + data.id + ');">Editar</button></td></div>';
             else
-                return '<td><button id="btnEditar" class="btn-primary status-active" onclick="cargarEditar(' + data.id + ');">Editar</button></td>';
+            if (data.estado === "1")
+                return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" onclick="cargarEditar(' + data.id + ');">Editar</button></td></div>';
+            else
+                return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" disabled onclick="cargarEditar(' + data.id + ');">Editar</button></td></div>';
+
         }
     ];
 
@@ -257,8 +267,8 @@
                     dwr.util.removeAllRows("listado");
                     listadoUsuario = data;
                     console.log("ingres");
-                    for (var i = 0; i < listadoUsuario.length; i++) {                        
-                        if (listadoUsuario[i].id === "1") {                        
+                    for (var i = 0; i < listadoUsuario.length; i++) {
+                        if (listadoUsuario[i].id === "1") {
                             //$("#btnEditar").prop('disabled', true);
                             $("#btnEditar").prop('disabled', true);
                         }
@@ -281,7 +291,7 @@
         $("#divIdUsuario").hide();
         ajaxGastos.consultarUsuario(id, {
             callback: function (data) {
-                if (data !== null) {                    
+                if (data !== null) {
                     $("#nombreUsuario").val(data.nombre);
                     $("#apellidoUsuario").val(data.apellido);
                     $("#tipoDocumento").val(data.tipoDocumento);
@@ -298,11 +308,11 @@
             timeout: 20000
         });
     }
-    
+
     function editarUsuarios() {
-        
+
         var usuarioSeguridad = {
-            usuario: jQuery("#usuario").val()            
+            usuario: jQuery("#usuario").val()
         };
         var usuario = {
             nombre: jQuery("#nombreUsuario").val(),
@@ -312,20 +322,20 @@
             correo: jQuery("#email").val(),
             fechaNacimiento: jQuery("#fechaNacimiento").val(),
             estado: jQuery("#estado").val(),
-            idTipoUsuario: jQuery("#tipoUsuario").val(),           
+            idTipoUsuario: jQuery("#tipoUsuario").val(),
             celular: jQuery("#telefonoMovil").val(),
-            id: jQuery("#idUsuario").val()            
-        };        
+            id: jQuery("#idUsuario").val()
+        };
 
         //validaUsuario();
 
         ajaxGastos.editarUsuario(usuario, usuarioSeguridad, {
-            callback: function(data) {
+            callback: function (data) {
 
                 if (data !== null) {
                     notificacion("success", "el usuario se ha editado con éxito", "alert");
                     limpiarFormularioRegistro();
-                    $("#btnVolver").click();
+                    setTimeout('$("#btnVolver").click();','2000');
                 } else {
                     notificacion("danger", "se ha generado un error", "alert");
                 }
@@ -335,13 +345,40 @@
         //desactivar();        
     }
 
+    function activarUsuario(idUsuario) {
+        ajaxGastos.activarEstadoUsuario(idUsuario, {
+            callback: function (data) {
+                if (data) {
+                    //listarUsuarios();
+                    cargarPagina('listar-usuarios.jsp');
+                } else {
+                    notificacion("danger", "No se pudo actualizar el estado.", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function inactivarUsuario(idUsuario) {
+        ajaxGastos.inactivarEstadoUsuario(idUsuario, {
+            callback: function (data) {
+                if (data) {
+                    listarUsuarios();
+                } else {
+                    notificacion("danger", "No se pudo actualizar el estado.", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+
     function volver() {
         $("#form_validation").hide();
         $("#tablaReportes").show();
         listarUsuarios();
     }
-    
-     function limpiarFormularioRegistro() {
+
+    function limpiarFormularioRegistro() {
         jQuery("#nombreUsuario").val("");
         jQuery("#apellidoUsuario").val("");
         jQuery("#tipoDocumento").val("");
@@ -349,7 +386,7 @@
         jQuery("#email").val("");
         jQuery("#fechaNacimiento").val("");
         jQuery("#estado").val("");
-        jQuery("#tipoUsuario").val("");        
+        jQuery("#tipoUsuario").val("");
         jQuery("#genero").val("");
         jQuery("#telefonoMovil").val("");
         jQuery("#direccion").val("");

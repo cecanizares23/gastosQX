@@ -373,4 +373,34 @@ public class FachadaAppGastos {
     public boolean validarDocumentoMedico(MedicoDTO datosMedico) {
         return MediadorAppGastos.getInstancia().validarDocumentoMedico(datosMedico);
     }
+    
+     /**
+      * 
+      * @param id
+      * @return 
+      */
+    @RemoteMethod
+    public boolean activarEstadoMedico(String id) {
+        return MediadorAppGastos.getInstancia().activarEstadoMedico(id);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    @RemoteMethod
+    public boolean inactivarEstadoMedico(String id) {
+        return MediadorAppGastos.getInstancia().inactivarEstadoMedico(id);
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public MedicoDTO ConsultarMedicoXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarMedicoXId(id);
+    }
+    
 }

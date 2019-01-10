@@ -192,7 +192,7 @@ public class MedicoDAO {
                 datosMedicos.setIdEspecialidad(rs.getString("espe_id"));
                 datosMedicos.setIdTipoDocumento(rs.getString("tido_id"));
                 datosMedicos.setCedula(rs.getString("medi_cedula"));
-                datosMedicos.setNombres(rs.getString("medi_nombres"));
+                datosMedicos.setNombres(rs.getString("medi_nombres") + " " + rs.getString("medi_apellidos"));
                 datosMedicos.setApellidos(rs.getString("medi_apellidos"));
                 datosMedicos.setEstado(rs.getString("medi_estado"));
                 datosMedicos.setCelular(rs.getString("medi_celular"));
@@ -316,6 +316,64 @@ public class MedicoDAO {
             return false;
         }
         return validado;
+    }
+    
+    /**
+     * 
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return 
+     */
+    public boolean activarEstadoMedico(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE medico SET medi_estado = ? WHERE medi_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return
+     */
+    public boolean inactivarEstadoMedico(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE medico SET medi_estado = ? WHERE medi_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
     }
     
 }

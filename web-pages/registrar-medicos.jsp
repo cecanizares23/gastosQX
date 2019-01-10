@@ -90,7 +90,7 @@
         <div class="col-md-6 form-group">            
             <label for="val_last_name" class="req">Direccion residencia:</label>
             <div class="input-group date">
-                <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                <span class="input-group-addon"><i class="el-icon-home bs_ttip"></i></span>
                 <input type="text" id="direccion" class="form-control" required/>
             </div>
         </div>        
@@ -110,7 +110,7 @@
         <div class="col-md-6 form-group">
             <label for="val_first_name" class="req">Especialidad:</label>
             <div class="input-group date">
-                <span class="input-group-addon"><i class="icon_group bs_ttip"></i></span>
+                <span class="input-group-addon"><i class="el-icon-universal-access bs_ttip"></i></span>
                 <select id="especialidad" class="form-control" required></select>
             </div>
         </div>                                                                        
@@ -119,7 +119,7 @@
             <div class="col-md-9 form-group"></div>
             <div class="col-md-3 form-group">
                 <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
-                <a class="btn btn-primary" onclick="javascript:cargarPagina('listar-usuarios.jsp');">Volver</a>
+                <a class="btn btn-primary" onclick="javascript:cargarPagina('listar-medicos.jsp');">Volver</a>
             </div>
 
         </div>        
@@ -210,6 +210,7 @@
 
                 if (data == true) {
                     jQuery("#mensajeDocumento").show();
+                    setTimeout('jQuery("#mensajeDocumento").hide();','4000');
                     jQuery("#btnRegistrar").prop("disabled", true);
                     jQuery("#documento").focus();
                     setTimeout('jQuery("#documento").val("");', '1000');
