@@ -11,6 +11,7 @@ package co.IngCarlos.gastosQX.mvc.fachada;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
+import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoDocumentoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoUsuarioDTO;
@@ -401,6 +402,74 @@ public class FachadaAppGastos {
     @RemoteMethod
     public MedicoDTO ConsultarMedicoXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarMedicoXId(id);
+    }
+    
+    /**
+     * 
+     * @param datosProcedimiento
+     * @return 
+     */
+    @RemoteMethod
+    public boolean registrarProcedimiento(ProcedimientoDTO datosProcedimiento) {
+        return MediadorAppGastos.getInstancia().registrarProcedimiento(datosProcedimiento);
+    }
+
+    /**
+     * 
+     * @param datosProcedimiento
+     * @return 
+     */
+    @RemoteMethod
+    public boolean actualizarProcedimiento(ProcedimientoDTO datosProcedimiento) {
+        return MediadorAppGastos.getInstancia().actualizarProcedimiento(datosProcedimiento);
+    }    
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RemoteMethod
+    public boolean eliminarProcedimiento(String id) {
+        return MediadorAppGastos.getInstancia().eliminarProcedimiento(id);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<ProcedimientoDTO> listarProcedimiento() {
+        return MediadorAppGastos.getInstancia().listarProcedimiento();
+    }
+    
+     /**
+      * 
+      * @param id
+      * @return 
+      */
+    @RemoteMethod
+    public boolean activarEstadoProcedimiento(String id) {
+        return MediadorAppGastos.getInstancia().activarEstadoProcedimiento(id);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    @RemoteMethod
+    public boolean inactivarEstadoProcedimiento(String id) {
+        return MediadorAppGastos.getInstancia().inactivarEstadoProcedimiento(id);
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public ProcedimientoDTO ConsultarProcedimientoXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarProcedimientoXId(id);
     }
     
 }

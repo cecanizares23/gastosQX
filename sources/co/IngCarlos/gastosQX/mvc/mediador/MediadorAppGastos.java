@@ -18,6 +18,7 @@ import co.IngCarlos.gastosQX.common.util.LoggerMessage;
 import co.IngCarlos.gastosQX.mvc.dao.DatosUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.EspecialidadDAO;
 import co.IngCarlos.gastosQX.mvc.dao.MedicoDAO;
+import co.IngCarlos.gastosQX.mvc.dao.ProcedimientoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoDocumentoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.UsuarioDAO;
@@ -26,6 +27,7 @@ import co.IngCarlos.gastosQX.mvc.dto.BodyMensajeDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
+import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RespuestaDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoDocumentoDTO;
@@ -1589,5 +1591,235 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
+    
+    /**
+     * 
+     * @param datosProcedimiento
+     * @return 
+     */
+    public boolean registrarProcedimiento(ProcedimientoDTO datosProcedimiento) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
 
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new ProcedimientoDAO().registrarProcedimiento(conexion, datosProcedimiento, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     * 
+     * @param datosProcedimiento
+     * @return 
+     */
+    public boolean actualizarProcedimiento(ProcedimientoDTO datosProcedimiento) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            registroExitoso = new ProcedimientoDAO().actualizarProcedimiento(conexion, datosProcedimiento, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean eliminarProcedimiento(String id) {
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean deleteExitoso = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            deleteExitoso = new ProcedimientoDAO().eliminarProcedimiento(conexion, id);
+
+            conexion.close();
+            conexion = null;
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            deleteExitoso = false;
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                deleteExitoso = false;
+            }
+        }
+        return deleteExitoso;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public ArrayList<ProcedimientoDTO> listarProcedimiento() {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<ProcedimientoDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new ProcedimientoDAO().listarProcedimiento(conexion, Constantes.ESTADO_ACTIVO);
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public boolean activarEstadoProcedimiento(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new ProcedimientoDAO().activarEstadoProcedimiento(conexion, id, Constantes.ESTADO_ACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public boolean inactivarEstadoProcedimiento(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new ProcedimientoDAO().inactivarEstadoProcedimiento(conexion, id, Constantes.ESTADO_INACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public ProcedimientoDTO ConsultarProcedimientoXId(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ProcedimientoDTO datos = null;
+
+        try {
+            HttpSession session = WebContextFactory.get().getSession();
+            DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            datos = new ProcedimientoDAO().ConsultarProcedimientoXId(conexion, id);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+
+        return datos;
+    }
+    
 }

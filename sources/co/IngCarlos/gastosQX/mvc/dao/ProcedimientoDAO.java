@@ -42,14 +42,15 @@ public class ProcedimientoDAO {
 
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" INSERT INTO procedimiento (proc_codigo, proc_descripcion, proc_registradopor)");
-            cadSQL.append("VALUES ( ?, ?, ?)");
+            cadSQL.append(" INSERT INTO procedimiento (proc_codigo, proc_descripcion, proc_estado, proc_registradopor)");
+            cadSQL.append("VALUES ( ?, ?, ?, ?)");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
             AsignaAtributoStatement.setString(1, datosProcedimiento.getCodigo(), ps);                       
             AsignaAtributoStatement.setString(2, datosProcedimiento.getDescripcion(), ps);
-            AsignaAtributoStatement.setString(3, usuario, ps);            
+            AsignaAtributoStatement.setString(3, datosProcedimiento.getEstado(), ps);
+            AsignaAtributoStatement.setString(4, usuario, ps);            
 
             nRows = ps.executeUpdate();
 
@@ -84,13 +85,14 @@ public class ProcedimientoDAO {
         try {
 
             cadSQL = new StringBuilder();
-            cadSQL.append("UPDATE procedimiento SET proc_codigo = ?, proc_descripcion = ?, proc_registradopor = ? WHERE proc_id = ?");
+            cadSQL.append("UPDATE procedimiento SET proc_codigo = ?, proc_descripcion = ?, proc_estado = ?, proc_registradopor = ? WHERE proc_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosOrdenCompra.getCodigo(), ps);
             AsignaAtributoStatement.setString(2, datosOrdenCompra.getDescripcion(), ps);
-            AsignaAtributoStatement.setString(3, usuario, ps);
-            AsignaAtributoStatement.setString(4, datosOrdenCompra.getId(), ps); 
+            AsignaAtributoStatement.setString(3, datosOrdenCompra.getEstado(), ps);
+            AsignaAtributoStatement.setString(4, usuario, ps);
+            AsignaAtributoStatement.setString(5, datosOrdenCompra.getId(), ps); 
             
 
             nRows = ps.executeUpdate();
@@ -154,7 +156,7 @@ public class ProcedimientoDAO {
      * @param id
      * @return
      */
-    public ArrayList<ProcedimientoDTO> listarOrdenCompra(Connection conexion, String id) {
+    public ArrayList<ProcedimientoDTO> listarProcedimiento(Connection conexion, String id) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<ProcedimientoDTO> listado = null;
@@ -162,7 +164,7 @@ public class ProcedimientoDAO {
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT  proc_id, proc_codigo, proc_descripcion, proc_registradopor, proc_fecharegistro");            
+            cadSQL.append(" SELECT  proc_id, proc_codigo, proc_descripcion, proc_estado, proc_registradopor, proc_fecharegistro");            
             cadSQL.append(" FROM procedimiento ");
             
             ps = conexion.prepareStatement(cadSQL.toString());
@@ -174,6 +176,7 @@ public class ProcedimientoDAO {
                 datosProcedimiento.setId(rs.getString("proc_id"));
                 datosProcedimiento.setCodigo(rs.getString("proc_codigo"));
                 datosProcedimiento.setDescripcion(rs.getString("proc_descripcion"));
+                datosProcedimiento.setEstado(rs.getString("proc_estado"));
                 datosProcedimiento.setRegistradoPor(rs.getString("proc_registradopor"));                
                 datosProcedimiento.setFechaRegistro(rs.getString("proc_fecharegistro"));
                 
@@ -199,6 +202,115 @@ public class ProcedimientoDAO {
             }
         }
         return listado;
+    }
+    
+     /**
+     * 
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return 
+     */
+    public boolean activarEstadoProcedimiento(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE procedimiento SET proc_estado = ? WHERE proc_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return
+     */
+    public boolean inactivarEstadoProcedimiento(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE procedimiento SET proc_estado = ? WHERE proc_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @return
+     */
+    public ProcedimientoDTO ConsultarProcedimientoXId(Connection conexion, String id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;        
+        ProcedimientoDTO datosProcedimientos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT proc_id, proc_codigo, proc_descripcion, proc_estado, proc_registradopor, proc_fecharegistro ");            
+            cadSQL.append(" FROM procedimiento where proc_id = ?");
+            
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, id, ps);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                datosProcedimientos = new ProcedimientoDTO();
+                datosProcedimientos.setId(rs.getString("proc_id"));
+                datosProcedimientos.setCodigo(rs.getString("proc_codigo"));
+                datosProcedimientos.setDescripcion(rs.getString("proc_descripcion"));
+                datosProcedimientos.setEstado(rs.getString("proc_estado"));
+                datosProcedimientos.setRegistradoPor(rs.getString("proc_registradopor"));
+                datosProcedimientos.setFechaRegistro(rs.getString("proc_fecharegistro"));
+                
+                //listado.add(datosMedicos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+
+        return datosProcedimientos;
     }
     
 }
