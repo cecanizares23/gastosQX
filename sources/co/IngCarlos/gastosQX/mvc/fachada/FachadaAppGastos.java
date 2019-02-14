@@ -10,6 +10,7 @@ package co.IngCarlos.gastosQX.mvc.fachada;
 
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
+import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
@@ -470,6 +471,103 @@ public class FachadaAppGastos {
     @RemoteMethod
     public ProcedimientoDTO ConsultarProcedimientoXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarProcedimientoXId(id);
+    }
+    
+     /**
+      * 
+      * @param id
+      * @return 
+      */
+    @RemoteMethod
+    public boolean activarEstadoEspecialidad(String id) {
+        return MediadorAppGastos.getInstancia().activarEstadoEspecialidad(id);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    @RemoteMethod
+    public boolean inactivarEstadoEspecialidad(String id) {
+        return MediadorAppGastos.getInstancia().inactivarEstadoEspecialidad(id);
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public EspecialidadDTO ConsultarEspecialidadXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarEspecialidadXId(id);
+    }
+    
+    /**
+     * 
+     * @param datosGastos
+     * @return 
+     */
+    @RemoteMethod
+    public boolean registrarGastos(GastosDTO datosGastos) {
+        return MediadorAppGastos.getInstancia().registrarGastos(datosGastos);
+    }
+
+    /**
+     * 
+     * @param datosGastos
+     * @return 
+     */
+    @RemoteMethod
+    public boolean actualizarGastos(GastosDTO datosGastos) {
+        return MediadorAppGastos.getInstancia().actualizarGastos(datosGastos);
+    }    
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RemoteMethod
+    public boolean eliminarGastos(String id) {
+        return MediadorAppGastos.getInstancia().eliminarGastos(id);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<GastosDTO> listarGastos() {
+        return MediadorAppGastos.getInstancia().listarGastos();
+    }
+    
+     /**
+      * 
+      * @param id
+      * @return 
+      */
+    @RemoteMethod
+    public boolean activarEstadoGastos(String id) {
+        return MediadorAppGastos.getInstancia().activarEstadoGastos(id);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    @RemoteMethod
+    public boolean inactivarEstadoGastos(String id) {
+        return MediadorAppGastos.getInstancia().inactivarEstadoGastos(id);
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public GastosDTO ConsultarGastosXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarGastosXId(id);
     }
     
 }

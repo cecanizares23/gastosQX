@@ -106,7 +106,7 @@
         <div class="col-md-12 form-group" id="divButtonRegistrar"><br><br>
             <div class="col-md-9 form-group"></div>
             <div class="col-md-3 form-group">
-                <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
+                <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:registrarProcedimiento();">Guardar</button>
                 <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('listar-procedimientos.jsp');">Volver</a>
             </div>
         </div>
@@ -114,7 +114,7 @@
         <div class="col-md-12 form-group" id="divButtonEditar"><br><br>
             <div class="col-md-9 form-group"></div>
             <div class="col-md-3 form-group">
-                <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validarEditar('form_validation');">Guardar</button>
+                <button class="btn btn-primary" id="btnRegistraEditar" onclick="javascript:validarEditar('form_validation');">Guardar</button>
                 <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('listar-procedimientos.jsp');">Volver</a>
             </div>
         </div>
@@ -182,7 +182,23 @@
     }
     
     function registrarProcedimiento() {
-        $("#btnRegistrar").prop('disabled', true);
+            $("#btnRegistrar").prop('disabled', true);
+            if($("#codigo").val() === ""){
+                $("#codigo").focus();
+                notificacion("danger", "El codigo no puede estar vacio", "alert");
+                $("#btnRegistrar").prop('disabled', false);
+                return;
+            }else if($("#descripcion").val() === ""){
+                $("#descripcion").focus();
+                notificacion("danger", "La descripcion no puede estar vacia", "alert");
+                $("#btnRegistrar").prop('disabled', false);
+                return;
+            }else if($("#estado").val() === ""){
+                $("#estado").focus();
+                notificacion("danger", "El estado no puede estar vacio", "alert");
+                $("#btnRegistrar").prop('disabled', false);
+                return;
+            }
         var procedimiento = {
             codigo: $("#codigo").val(),
             descripcion: $("#descripcion").val(),
@@ -231,7 +247,7 @@
     }
     
     function limpiarFormulario(){
-        $("#codigo").val("");
+        $("#prefijo").val("");
         $("#descripcion").val("");
         $("#estado").val("");
     }
@@ -291,18 +307,20 @@
         setTimeout('$(".alert").alert("close");', '10000');
     }
 
-    var nextFunction = null;
     function validar(formulario) {
-        nextFunction = 1;
-        $('#' + formulario).validate({
-            highlight: function (label) {
+console.log("formulario ", formulario);
+        $('#' + formulario).validate({            
+            highlight: function(label) {
+                console.log("ingresa 1");
                 jQuery(label).closest('.form-group').removeClass('has-success').addClass('has-error');
             },
-            success: function (label) {
+            success: function(label) {
+                console.log("ingresa 2");
                 jQuery(label).closest('.form-group').removeClass('has-error');
                 label.remove();
             },
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
+                console.log("ingresa 3");
                 var placement = element.closest('.input-group');
                 if (!placement.get(0)) {
                     placement = element;
@@ -311,8 +329,8 @@
                     placement.after(error);
                 }
             },
-            submitHandler: function () {
-
+            submitHandler: function() {                
+                console.log("ingresa 4");
                 registrarProcedimiento();
 
             }

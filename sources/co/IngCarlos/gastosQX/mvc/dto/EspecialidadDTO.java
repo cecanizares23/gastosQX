@@ -22,6 +22,7 @@ public class EspecialidadDTO implements Serializable{
     String id = Generales.EMPTYSTRING;
     String descripcion = Generales.EMPTYSTRING;
     String prefijo = Generales.EMPTYSTRING;
+    String estado = Generales.EMPTYSTRING;
     String registradoPor = Generales.EMPTYSTRING;
     String fechaRegistro = Generales.EMPTYSTRING;
 
@@ -47,6 +48,14 @@ public class EspecialidadDTO implements Serializable{
 
     public void setPrefijo(String prefijo) {
         this.prefijo = prefijo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getRegistradoPor() {

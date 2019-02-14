@@ -26,6 +26,7 @@ public class GastosDTO implements Serializable {
     String fecha = Generales.EMPTYSTRING;
     String registradoPor = Generales.EMPTYSTRING;
     String fechaRegistro = Generales.EMPTYSTRING;
+    String estado = Generales.EMPTYSTRING;
 
     public String getId() {
         return id;
@@ -81,6 +82,14 @@ public class GastosDTO implements Serializable {
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
     
     public String toStringJson() {
