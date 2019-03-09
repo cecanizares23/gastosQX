@@ -1610,7 +1610,7 @@ public class MediadorAppGastos {
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            conexion.setAutoCommit(false);
+            conexion.setAutoCommit(false);            
             registroExitoso = new ProcedimientoDAO().registrarProcedimiento(conexion, datosProcedimiento, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -1922,7 +1922,7 @@ public class MediadorAppGastos {
      * @param datosGastos
      * @return 
      */
-    public boolean registrarGastos(GastosDTO datosGastos) {
+    public String registrarGastos(GastosDTO datosGastos) {
         HttpSession session = WebContextFactory.get().getSession();
         DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
 
@@ -1934,6 +1934,8 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             conexion.setAutoCommit(false);
+            datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
+            datosGastos.setEstado(Constantes.ESTADO_ACTIVO);
             registroExitoso = new GastosDAO().registrarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -1948,7 +1950,7 @@ public class MediadorAppGastos {
                 LoggerMessage.getInstancia().loggerMessageException(e);
             }
         }
-        return registroExitoso;
+        return datosGastos.getId();
     }
     
     /**
@@ -1968,6 +1970,8 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             conexion.setAutoCommit(false);
+             datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));   
+             System.out.println("fecha " + datosGastos.getFecha());
             registroExitoso = new GastosDAO().actualizarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
         } catch (Exception e) {

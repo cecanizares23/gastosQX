@@ -10,6 +10,7 @@
 package co.IngCarlos.gastosQX.mvc.dao;
 
 import co.IngCarlos.gastosQX.common.util.AsignaAtributoStatement;
+import co.IngCarlos.gastosQX.common.util.Constantes;
 import co.IngCarlos.gastosQX.common.util.LoggerMessage;
 import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import java.sql.Connection;
@@ -165,10 +166,10 @@ public class ProcedimientoDAO {
         try {
             cadSQL = new StringBuilder();
             cadSQL.append(" SELECT  proc_id, proc_codigo, proc_descripcion, proc_estado, proc_registradopor, proc_fecharegistro");            
-            cadSQL.append(" FROM procedimiento ");
+            cadSQL.append(" FROM procedimiento WHERE proc_estado = ?");
             
             ps = conexion.prepareStatement(cadSQL.toString());
-            //AsignaAtributoStatement.setString(1, idGasto, ps);
+            AsignaAtributoStatement.setString(1, Constantes.ESTADO_ACTIVO, ps);
             rs = ps.executeQuery();
             listado = new ArrayList();
             while (rs.next()) {

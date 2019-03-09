@@ -84,18 +84,19 @@ public class GastosDAO {
         int nRows = 0;
         StringBuilder cadSQL = null;
         boolean registroExitoso = false;
-
+        System.out.println("datosGastos " + datosGastos.toStringJson() + " usuario " + usuario);
         try {
 
             cadSQL = new StringBuilder();
-            cadSQL.append("UPDATE gastos SET proc_id = ?, gast_paciente = ?, gast_cedula = ?, gast_fecha = ?, gast_estado = ?, gast_registradopor = ? WHERE gast_id = ?");
+            cadSQL.append("UPDATE gastos SET proc_id = ?, gast_paciente = ?, gast_cedula = ?, gast_fecha = ?, gast_estado = ?, gast_registradopor = ? "
+                    + "WHERE gast_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosGastos.getIdProcedimiento(), ps);
             AsignaAtributoStatement.setString(2, datosGastos.getPaciente(), ps);            
             AsignaAtributoStatement.setString(3, datosGastos.getCedula(), ps);
             AsignaAtributoStatement.setString(4, datosGastos.getFecha(), ps);
-            AsignaAtributoStatement.setString(5, datosGastos.getEstado(), ps);
+            AsignaAtributoStatement.setString(5, Constantes.ESTADO_ACTIVO, ps);
             AsignaAtributoStatement.setString(6, usuario, ps);                        
             AsignaAtributoStatement.setString(7, datosGastos.getId(), ps);
 

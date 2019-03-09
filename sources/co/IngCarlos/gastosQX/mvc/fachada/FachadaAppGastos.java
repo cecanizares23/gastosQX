@@ -508,7 +508,7 @@ public class FachadaAppGastos {
      * @return 
      */
     @RemoteMethod
-    public boolean registrarGastos(GastosDTO datosGastos) {
+    public String registrarGastos(GastosDTO datosGastos) {
         return MediadorAppGastos.getInstancia().registrarGastos(datosGastos);
     }
 
@@ -519,6 +519,7 @@ public class FachadaAppGastos {
      */
     @RemoteMethod
     public boolean actualizarGastos(GastosDTO datosGastos) {
+        System.out.println("datosGastos " + datosGastos.toStringJson());
         return MediadorAppGastos.getInstancia().actualizarGastos(datosGastos);
     }    
 
