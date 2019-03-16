@@ -42,18 +42,19 @@ public class ArticulosDAO {
 
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" INSERT INTO articulos (arti_referencia, arti_lote, arti_cantidad, arti_unidadmedida, arti_cantidadmax, arti_cantidadmin, arti_registradopor)");
-            cadSQL.append("VALUES ( ?, ?, ?, ?, ?, ?, ?)");
+            cadSQL.append(" INSERT INTO articulos (arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, arti_cantidadmax, arti_cantidadmin, arti_registradopor)");
+            cadSQL.append("VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
             AsignaAtributoStatement.setString(1, datosArticulos.getReferencia(), ps);
             AsignaAtributoStatement.setString(2, datosArticulos.getLote(), ps);
-            AsignaAtributoStatement.setString(3, datosArticulos.getCantidad(), ps);
-            AsignaAtributoStatement.setString(4, datosArticulos.getUnidadMedidad(), ps);
-            AsignaAtributoStatement.setString(5, datosArticulos.getCantidadMax(), ps);
-            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);
-            AsignaAtributoStatement.setString(7, usuario, ps);            
+            AsignaAtributoStatement.setString(3, datosArticulos.getDescripcion(), ps);
+            AsignaAtributoStatement.setString(4, datosArticulos.getCantidad(), ps);
+            AsignaAtributoStatement.setString(5, datosArticulos.getUnidadMedidad(), ps);
+            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMax(), ps);
+            AsignaAtributoStatement.setString(7, datosArticulos.getCantidadMin(), ps);
+            AsignaAtributoStatement.setString(8, usuario, ps);            
 
             nRows = ps.executeUpdate();
 
@@ -208,6 +209,42 @@ public class ArticulosDAO {
             }
         }
         return listado;
+    }
+    
+    /**
+     * 
+     * @param conexion
+     * @param datosArticulo
+     * @return
+     * @throws SQLException 
+     */
+    public boolean validarReferencia(Connection conexion, ArticulosDTO datosArticulo) throws SQLException {
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean validado = false;
+        
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT  arti_referencia");
+            cadSQL.append(" FROM articulos ");
+            cadSQL.append(" WHERE arti_referencia = ?");
+
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, datosArticulo.getReferencia(), ps);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+
+                validado = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return validado;
     }
     
 }

@@ -15,6 +15,7 @@ import co.IngCarlos.gastosQX.common.util.EnvioEmail;
 import co.IngCarlos.gastosQX.common.util.Formato;
 import co.IngCarlos.gastosQX.common.util.Generales;
 import co.IngCarlos.gastosQX.common.util.LoggerMessage;
+import co.IngCarlos.gastosQX.mvc.dao.ArticulosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.DatosUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.EspecialidadDAO;
 import co.IngCarlos.gastosQX.mvc.dao.GastosDAO;
@@ -24,6 +25,7 @@ import co.IngCarlos.gastosQX.mvc.dao.TipoDocumentoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.UsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.UsuarioSeguridadDAO;
+import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.BodyMensajeDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
@@ -1357,12 +1359,12 @@ public class MediadorAppGastos {
         }
 
         return datos;
-    }    
+    }
 
     /**
-     * 
+     *
      * @param datosEspecialidad
-     * @return 
+     * @return
      */
     public boolean registrarEspecialidad(EspecialidadDTO datosEspecialidad) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1394,9 +1396,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param datosEspecialidad
-     * @return 
+     * @return
      */
     public boolean actualizarEspecialidad(EspecialidadDTO datosEspecialidad) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1426,7 +1428,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @return
@@ -1495,11 +1497,11 @@ public class MediadorAppGastos {
         }
         return deleteExitoso;
     }
-    
+
     /**
-     * 
+     *
      * @param datosMedico
-     * @return 
+     * @return
      */
     public boolean validarDocumentoMedico(MedicoDTO datosMedico) {
 
@@ -1536,12 +1538,12 @@ public class MediadorAppGastos {
             }
         }
         return validarUsuario;
-    }   
-    
+    }
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean activarEstadoMedico(String id) {
         DataBaseConnection dbcon = null;
@@ -1567,9 +1569,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean inactivarEstadoMedico(String id) {
         DataBaseConnection dbcon = null;
@@ -1593,11 +1595,11 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
-     * 
+     *
      * @param datosProcedimiento
-     * @return 
+     * @return
      */
     public boolean registrarProcedimiento(ProcedimientoDTO datosProcedimiento) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1610,7 +1612,7 @@ public class MediadorAppGastos {
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            conexion.setAutoCommit(false);            
+            conexion.setAutoCommit(false);
             registroExitoso = new ProcedimientoDAO().registrarProcedimiento(conexion, datosProcedimiento, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -1629,9 +1631,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param datosProcedimiento
-     * @return 
+     * @return
      */
     public boolean actualizarProcedimiento(ProcedimientoDTO datosProcedimiento) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1661,7 +1663,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param id
@@ -1698,7 +1700,7 @@ public class MediadorAppGastos {
         }
         return deleteExitoso;
     }
-    
+
     /**
      *
      * @return
@@ -1730,11 +1732,11 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean activarEstadoProcedimiento(String id) {
         DataBaseConnection dbcon = null;
@@ -1760,9 +1762,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean inactivarEstadoProcedimiento(String id) {
         DataBaseConnection dbcon = null;
@@ -1786,11 +1788,11 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public ProcedimientoDTO ConsultarProcedimientoXId(String id) {
         DataBaseConnection dbcon = null;
@@ -1823,11 +1825,11 @@ public class MediadorAppGastos {
 
         return datos;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean activarEstadoEspecialidad(String id) {
         DataBaseConnection dbcon = null;
@@ -1853,9 +1855,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean inactivarEstadoEspecialidad(String id) {
         DataBaseConnection dbcon = null;
@@ -1879,11 +1881,11 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public EspecialidadDTO ConsultarEspecialidadXId(String id) {
         DataBaseConnection dbcon = null;
@@ -1916,11 +1918,11 @@ public class MediadorAppGastos {
 
         return datos;
     }
-    
+
     /**
-     * 
+     *
      * @param datosGastos
-     * @return 
+     * @return
      */
     public String registrarGastos(GastosDTO datosGastos) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1952,11 +1954,11 @@ public class MediadorAppGastos {
         }
         return datosGastos.getId();
     }
-    
+
     /**
-     * 
+     *
      * @param datosGastos
-     * @return 
+     * @return
      */
     public boolean actualizarGastos(GastosDTO datosGastos) {
         HttpSession session = WebContextFactory.get().getSession();
@@ -1970,8 +1972,8 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             conexion.setAutoCommit(false);
-             datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));   
-             System.out.println("fecha " + datosGastos.getFecha());
+            datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
+            System.out.println("fecha " + datosGastos.getFecha());
             registroExitoso = new GastosDAO().actualizarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -1988,7 +1990,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param id
@@ -2025,7 +2027,7 @@ public class MediadorAppGastos {
         }
         return deleteExitoso;
     }
-    
+
     /**
      *
      * @return
@@ -2057,11 +2059,11 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean activarEstadoGastos(String id) {
         DataBaseConnection dbcon = null;
@@ -2087,9 +2089,9 @@ public class MediadorAppGastos {
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public boolean inactivarEstadoGastos(String id) {
         DataBaseConnection dbcon = null;
@@ -2113,11 +2115,11 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public GastosDTO ConsultarGastosXId(String id) {
         DataBaseConnection dbcon = null;
@@ -2150,5 +2152,157 @@ public class MediadorAppGastos {
 
         return datos;
     }
+
+    /**
+     *
+     * @param datosArticulos
+     * @return
+     */
+    public String registrarArticulo(ArticulosDTO datosArticulos) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            //datosArticulos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
+            //datosArticulos.setEstado(Constantes.ESTADO_ACTIVO);
+            datosArticulos.setCantidad(Constantes.ZERO);
+            registroExitoso = new ArticulosDAO().registrarArticulo(conexion, datosArticulos, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return datosArticulos.getId();
+    }
+
+    /**
+     *
+     * @param datosArticulo
+     * @return
+     */
+    public boolean actualizarArticulo(ArticulosDTO datosArticulo) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+            //datosArticulo.setFecha(Formato.formatoFecha(datosGastos.getFecha()));   
+            //System.out.println("fecha " + datosArticulo.getFecha());
+            registroExitoso = new ArticulosDAO().actualizarArticulo(conexion, datosArticulo, datosUsuario.getUsuario());
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
     
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean eliminarArticulo(String id) {
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean deleteExitoso = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            deleteExitoso = new ArticulosDAO().eliminarArticulo(conexion, id);
+
+            conexion.close();
+            conexion = null;
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            deleteExitoso = false;
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                deleteExitoso = false;
+            }
+        }
+        return deleteExitoso;
+    }
+    
+    /**
+     *
+     * @param datosArticulo
+     * @return
+     */
+    public boolean validarReferencia(ArticulosDTO datosArticulo) {
+
+        HttpSession session = WebContextFactory.get().getSession();
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+
+        boolean validarUsuario = false;
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+
+            validarUsuario = new ArticulosDAO().validarReferencia(conexion, datosArticulo);
+
+            if (validarUsuario) {
+                conexion.commit();
+
+            } else {
+                conexion.rollback();
+            }
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return validarUsuario;
+    }
+
 }

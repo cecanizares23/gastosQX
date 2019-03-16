@@ -8,6 +8,7 @@
  */
 package co.IngCarlos.gastosQX.mvc.fachada;
 
+import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
@@ -569,6 +570,26 @@ public class FachadaAppGastos {
     @RemoteMethod
     public GastosDTO ConsultarGastosXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarGastosXId(id);
+    }
+    
+    /**
+     * 
+     * @param datosArticulos
+     * @return 
+     */
+    @RemoteMethod
+    public String registrarArticulo(ArticulosDTO datosArticulos) {
+        return MediadorAppGastos.getInstancia().registrarArticulo(datosArticulos);
+    }
+    
+    /**
+     *
+     * @param datosArticulos
+     * @return
+     */
+    @RemoteMethod
+    public boolean validarReferencia(ArticulosDTO datosArticulos) {
+        return MediadorAppGastos.getInstancia().validarReferencia(datosArticulos);
     }
     
 }
