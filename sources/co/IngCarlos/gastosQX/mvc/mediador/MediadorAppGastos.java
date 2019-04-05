@@ -2173,6 +2173,7 @@ public class MediadorAppGastos {
             //datosArticulos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
             //datosArticulos.setEstado(Constantes.ESTADO_ACTIVO);
             datosArticulos.setCantidad(Constantes.ZERO);
+            datosArticulos.setEstado(Constantes.ESTADO_ACTIVO);
             registroExitoso = new ArticulosDAO().registrarArticulo(conexion, datosArticulos, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -2303,6 +2304,94 @@ public class MediadorAppGastos {
             }
         }
         return validarUsuario;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public ArrayList<ArticulosDTO> listarTodosLosArticulos() {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<ArticulosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new ArticulosDAO().listarTodosLosArticulos(conexion);
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean activarEstadoArticulo(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new ArticulosDAO().activarEstadoArticulo(conexion, id, Constantes.ESTADO_ACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public boolean inactivarEstadoArticulo(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            registroExitoso = new ArticulosDAO().inactivarEstadoArticulo(conexion, id, Constantes.ESTADO_INACTIVO);
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return registroExitoso;
     }
 
 }

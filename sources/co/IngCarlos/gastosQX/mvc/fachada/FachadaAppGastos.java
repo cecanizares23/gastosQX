@@ -592,4 +592,33 @@ public class FachadaAppGastos {
         return MediadorAppGastos.getInstancia().validarReferencia(datosArticulos);
     }
     
+    /**
+     *
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<ArticulosDTO> listarTodosLosArticulos() {
+        return MediadorAppGastos.getInstancia().listarTodosLosArticulos();
+    }
+    
+    /**
+      * 
+      * @param id
+      * @return 
+      */
+    @RemoteMethod
+    public boolean activarEstadoArticulo(String id) {
+        return MediadorAppGastos.getInstancia().activarEstadoArticulo(id);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    @RemoteMethod
+    public boolean inactivarEstadoArticulo(String id) {
+        return MediadorAppGastos.getInstancia().inactivarEstadoArticulo(id);
+    }
+    
 }

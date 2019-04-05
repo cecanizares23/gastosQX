@@ -158,6 +158,7 @@
                 return '<div class="text-center"><td><button id="btnEditar" class="btn btn-primary status-active" disabled onclick="cargarEditarProcedimiento(' + data.id + ');">Editar</button></td></div>';
         }
     ];
+    
     function listarEspecialidades() {
         ajaxGastos.listarTodasEspecialidades({
             callback: function (data) {

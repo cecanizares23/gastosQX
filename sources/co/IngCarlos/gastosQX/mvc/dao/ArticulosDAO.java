@@ -42,8 +42,8 @@ public class ArticulosDAO {
 
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" INSERT INTO articulos (arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, arti_cantidadmax, arti_cantidadmin, arti_registradopor)");
-            cadSQL.append("VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
+            cadSQL.append(" INSERT INTO articulos (arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, arti_cantidadmax, arti_cantidadmin, arti_estado, arti_registradopor)");
+            cadSQL.append("VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
@@ -54,7 +54,8 @@ public class ArticulosDAO {
             AsignaAtributoStatement.setString(5, datosArticulos.getUnidadMedidad(), ps);
             AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMax(), ps);
             AsignaAtributoStatement.setString(7, datosArticulos.getCantidadMin(), ps);
-            AsignaAtributoStatement.setString(8, usuario, ps);            
+            AsignaAtributoStatement.setString(8, datosArticulos.getEstado(), ps);
+            AsignaAtributoStatement.setString(9, usuario, ps);            
 
             nRows = ps.executeUpdate();
 
@@ -89,7 +90,7 @@ public class ArticulosDAO {
         try {
 
             cadSQL = new StringBuilder();
-            cadSQL.append("UPDATE articulos SET arti_referencia = ?, arti_lote = ?, arti_cantidad = ?, arti_unidadmedida = ?, arti_cantidadmax = ?, arti_cantidadmin = ?, arti_registradopor = ? WHERE   arti_id = ?");
+            cadSQL.append("UPDATE articulos SET arti_referencia = ?, arti_lote = ?, arti_cantidad = ?, arti_unidadmedida = ?, arti_cantidadmax = ?, arti_cantidadmin = ?, arti_estado = ?, arti_registradopor = ? WHERE   arti_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosArticulos.getReferencia(), ps);
@@ -98,8 +99,9 @@ public class ArticulosDAO {
             AsignaAtributoStatement.setString(4, datosArticulos.getUnidadMedidad(), ps);
             AsignaAtributoStatement.setString(5, datosArticulos.getCantidadMax(), ps);
             AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);
-            AsignaAtributoStatement.setString(7, usuario, ps);
-            AsignaAtributoStatement.setString(8, datosArticulos.getId(), ps);
+            AsignaAtributoStatement.setString(7, datosArticulos.getEstado(), ps);
+            AsignaAtributoStatement.setString(8, usuario, ps);
+            AsignaAtributoStatement.setString(9, datosArticulos.getId(), ps);
 
             nRows = ps.executeUpdate();
             if (nRows > 0) {
@@ -170,7 +172,7 @@ public class ArticulosDAO {
         try {
             cadSQL = new StringBuilder();
             cadSQL.append(" SELECT arti_id, arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, ");
-            cadSQL.append(" arti_cantidadmax, arti_cantidadmin, arti_registradopor, arti_fecharegistro ");
+            cadSQL.append(" arti_cantidadmax, arti_cantidadmin, arti_estado, arti_registradopor, arti_fecharegistro ");
             cadSQL.append(" FROM articulos ");
             ps = conexion.prepareStatement(cadSQL.toString());
             rs = ps.executeQuery();
@@ -185,6 +187,7 @@ public class ArticulosDAO {
                 datosArticulos.setUnidadMedidad(rs.getString("arti_unidadmedida"));
                 datosArticulos.setCantidadMax(rs.getString("arti_cantidadmax"));
                 datosArticulos.setCantidadMin(rs.getString("arti_cantidadmin"));
+                datosArticulos.setEstado(rs.getString("arti_estado"));
                 datosArticulos.setRegistradoPor(rs.getString("arti_registradopor"));
                 datosArticulos.setFechaRegistro(rs.getString("arti_fecharegistro"));
                 listado.add(datosArticulos);
@@ -245,6 +248,64 @@ public class ArticulosDAO {
             return false;
         }
         return validado;
+    }
+    
+    /**
+     * 
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return 
+     */
+    public boolean activarEstadoArticulo(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE articulos SET arti_estado = ? WHERE arti_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
+
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @param estado
+     * @return
+     */
+    public boolean inactivarEstadoArticulo(Connection conexion, String id, String estado) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append("UPDATE articulos SET arti_estado = ? WHERE arti_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
     }
     
 }
