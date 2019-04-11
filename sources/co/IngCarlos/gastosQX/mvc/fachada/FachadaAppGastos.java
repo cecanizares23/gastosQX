@@ -376,27 +376,27 @@ public class FachadaAppGastos {
     public boolean validarDocumentoMedico(MedicoDTO datosMedico) {
         return MediadorAppGastos.getInstancia().validarDocumentoMedico(datosMedico);
     }
-    
-     /**
-      * 
-      * @param id
-      * @return 
-      */
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RemoteMethod
     public boolean activarEstadoMedico(String id) {
         return MediadorAppGastos.getInstancia().activarEstadoMedico(id);
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean inactivarEstadoMedico(String id) {
         return MediadorAppGastos.getInstancia().inactivarEstadoMedico(id);
     }
-    
+
     /**
      *
      * @return @param id
@@ -405,11 +405,11 @@ public class FachadaAppGastos {
     public MedicoDTO ConsultarMedicoXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarMedicoXId(id);
     }
-    
+
     /**
-     * 
+     *
      * @param datosProcedimiento
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean registrarProcedimiento(ProcedimientoDTO datosProcedimiento) {
@@ -417,14 +417,14 @@ public class FachadaAppGastos {
     }
 
     /**
-     * 
+     *
      * @param datosProcedimiento
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean actualizarProcedimiento(ProcedimientoDTO datosProcedimiento) {
         return MediadorAppGastos.getInstancia().actualizarProcedimiento(datosProcedimiento);
-    }    
+    }
 
     /**
      *
@@ -435,7 +435,7 @@ public class FachadaAppGastos {
     public boolean eliminarProcedimiento(String id) {
         return MediadorAppGastos.getInstancia().eliminarProcedimiento(id);
     }
-    
+
     /**
      *
      * @return
@@ -444,27 +444,27 @@ public class FachadaAppGastos {
     public ArrayList<ProcedimientoDTO> listarProcedimiento() {
         return MediadorAppGastos.getInstancia().listarProcedimiento();
     }
-    
-     /**
-      * 
-      * @param id
-      * @return 
-      */
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RemoteMethod
     public boolean activarEstadoProcedimiento(String id) {
         return MediadorAppGastos.getInstancia().activarEstadoProcedimiento(id);
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean inactivarEstadoProcedimiento(String id) {
         return MediadorAppGastos.getInstancia().inactivarEstadoProcedimiento(id);
     }
-    
+
     /**
      *
      * @return @param id
@@ -473,27 +473,27 @@ public class FachadaAppGastos {
     public ProcedimientoDTO ConsultarProcedimientoXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarProcedimientoXId(id);
     }
-    
-     /**
-      * 
-      * @param id
-      * @return 
-      */
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RemoteMethod
     public boolean activarEstadoEspecialidad(String id) {
         return MediadorAppGastos.getInstancia().activarEstadoEspecialidad(id);
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean inactivarEstadoEspecialidad(String id) {
         return MediadorAppGastos.getInstancia().inactivarEstadoEspecialidad(id);
     }
-    
+
     /**
      *
      * @return @param id
@@ -502,11 +502,11 @@ public class FachadaAppGastos {
     public EspecialidadDTO ConsultarEspecialidadXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarEspecialidadXId(id);
     }
-    
+
     /**
-     * 
+     *
      * @param datosGastos
-     * @return 
+     * @return
      */
     @RemoteMethod
     public String registrarGastos(GastosDTO datosGastos) {
@@ -514,15 +514,15 @@ public class FachadaAppGastos {
     }
 
     /**
-     * 
+     *
      * @param datosGastos
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean actualizarGastos(GastosDTO datosGastos) {
         System.out.println("datosGastos " + datosGastos.toStringJson());
         return MediadorAppGastos.getInstancia().actualizarGastos(datosGastos);
-    }    
+    }
 
     /**
      *
@@ -533,7 +533,7 @@ public class FachadaAppGastos {
     public boolean eliminarGastos(String id) {
         return MediadorAppGastos.getInstancia().eliminarGastos(id);
     }
-    
+
     /**
      *
      * @return
@@ -542,27 +542,27 @@ public class FachadaAppGastos {
     public ArrayList<GastosDTO> listarGastos() {
         return MediadorAppGastos.getInstancia().listarGastos();
     }
-    
-     /**
-      * 
-      * @param id
-      * @return 
-      */
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RemoteMethod
     public boolean activarEstadoGastos(String id) {
         return MediadorAppGastos.getInstancia().activarEstadoGastos(id);
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean inactivarEstadoGastos(String id) {
         return MediadorAppGastos.getInstancia().inactivarEstadoGastos(id);
     }
-    
+
     /**
      *
      * @return @param id
@@ -571,17 +571,17 @@ public class FachadaAppGastos {
     public GastosDTO ConsultarGastosXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarGastosXId(id);
     }
-    
+
     /**
-     * 
+     *
      * @param datosArticulos
-     * @return 
+     * @return
      */
     @RemoteMethod
     public String registrarArticulo(ArticulosDTO datosArticulos) {
         return MediadorAppGastos.getInstancia().registrarArticulo(datosArticulos);
     }
-    
+
     /**
      *
      * @param datosArticulos
@@ -591,7 +591,7 @@ public class FachadaAppGastos {
     public boolean validarReferencia(ArticulosDTO datosArticulos) {
         return MediadorAppGastos.getInstancia().validarReferencia(datosArticulos);
     }
-    
+
     /**
      *
      * @return
@@ -600,25 +600,44 @@ public class FachadaAppGastos {
     public ArrayList<ArticulosDTO> listarTodosLosArticulos() {
         return MediadorAppGastos.getInstancia().listarTodosLosArticulos();
     }
-    
+
     /**
-      * 
-      * @param id
-      * @return 
-      */
+     *
+     * @param id
+     * @return
+     */
     @RemoteMethod
     public boolean activarEstadoArticulo(String id) {
         return MediadorAppGastos.getInstancia().activarEstadoArticulo(id);
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RemoteMethod
     public boolean inactivarEstadoArticulo(String id) {
         return MediadorAppGastos.getInstancia().inactivarEstadoArticulo(id);
     }
-    
+
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public ArticulosDTO ConsultarArticulosXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarArticulosXId(id);
+    }
+
+    /**
+     *
+     * @param datosArticulos
+     * @return
+     */
+    @RemoteMethod
+    public boolean actualizarArticulo(ArticulosDTO datosArticulos) {
+        return MediadorAppGastos.getInstancia().actualizarArticulo(datosArticulos);
+    }
+
 }

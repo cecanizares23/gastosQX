@@ -88,9 +88,10 @@ public class ArticulosDAO {
         boolean registroExitoso = false;
 
         try {
-
+            System.out.println("datosArticulos " + datosArticulos.toStringJson());
             cadSQL = new StringBuilder();
-            cadSQL.append("UPDATE articulos SET arti_referencia = ?, arti_lote = ?, arti_cantidad = ?, arti_unidadmedida = ?, arti_cantidadmax = ?, arti_cantidadmin = ?, arti_estado = ?, arti_registradopor = ? WHERE   arti_id = ?");
+            cadSQL.append("UPDATE articulos SET arti_referencia = ?, arti_lote = ?, arti_cantidad = ?, arti_unidadmedida = ?, arti_cantidadmax = ?, arti_cantidadmin = ?,"
+                    + "  arti_registradopor = ? WHERE   arti_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosArticulos.getReferencia(), ps);
@@ -98,10 +99,9 @@ public class ArticulosDAO {
             AsignaAtributoStatement.setString(3, datosArticulos.getCantidad(), ps);
             AsignaAtributoStatement.setString(4, datosArticulos.getUnidadMedidad(), ps);
             AsignaAtributoStatement.setString(5, datosArticulos.getCantidadMax(), ps);
-            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);
-            AsignaAtributoStatement.setString(7, datosArticulos.getEstado(), ps);
-            AsignaAtributoStatement.setString(8, usuario, ps);
-            AsignaAtributoStatement.setString(9, datosArticulos.getId(), ps);
+            AsignaAtributoStatement.setString(6, datosArticulos.getCantidadMin(), ps);            
+            AsignaAtributoStatement.setString(7, usuario, ps);
+            AsignaAtributoStatement.setString(8, datosArticulos.getId(), ps);
 
             nRows = ps.executeUpdate();
             if (nRows > 0) {
@@ -306,6 +306,63 @@ public class ArticulosDAO {
             return false;
         }
         return registroExitoso;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param id
+     * @return
+     */
+    public ArticulosDTO ConsultarArticulosXId(Connection conexion, String id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;        
+        ArticulosDTO datosArticulos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT arti_id, arti_referencia, arti_lote, arti_descripcion, arti_cantidad, arti_unidadmedida, ");
+            cadSQL.append(" arti_cantidadmax, arti_cantidadmin, arti_estado, arti_registradopor, arti_fecharegistro ");          
+            cadSQL.append(" FROM articulos where arti_id = ?");
+            
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, id, ps);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                datosArticulos = new ArticulosDTO();
+                datosArticulos.setId(rs.getString("arti_id"));
+                datosArticulos.setReferencia(rs.getString("arti_referencia"));
+                datosArticulos.setLote(rs.getString("arti_lote"));
+                datosArticulos.setDescripcion(rs.getString("arti_descripcion"));
+                datosArticulos.setCantidad(rs.getString("arti_cantidad"));
+                datosArticulos.setUnidadMedidad(rs.getString("arti_unidadmedida"));                
+                datosArticulos.setCantidadMax(rs.getString("arti_cantidadmax"));
+                datosArticulos.setCantidadMin(rs.getString("arti_cantidadmin"));
+                datosArticulos.setEstado(rs.getString("arti_estado"));
+                datosArticulos.setRegistradoPor(rs.getString("arti_estado"));
+                datosArticulos.setFechaRegistro(rs.getString("arti_fecharegistro"));
+                
+                //listado.add(datosMedicos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+
+        return datosArticulos;
     }
     
 }

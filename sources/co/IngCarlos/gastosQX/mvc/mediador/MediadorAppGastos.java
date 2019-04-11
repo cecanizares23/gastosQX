@@ -2211,6 +2211,7 @@ public class MediadorAppGastos {
             //datosArticulo.setFecha(Formato.formatoFecha(datosGastos.getFecha()));   
             //System.out.println("fecha " + datosArticulo.getFecha());
             registroExitoso = new ArticulosDAO().actualizarArticulo(conexion, datosArticulo, datosUsuario.getUsuario());
+            System.out.println("datos " + datosArticulo.toStringJson());
 
         } catch (Exception e) {
             LoggerMessage.getInstancia().loggerMessageException(e);
@@ -2318,6 +2319,17 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new ArticulosDAO().listarTodosLosArticulos(conexion);
+            for (int i = 0; i < listado.size(); i++) {
+                if ("1".equals(listado.get(i).getUnidadMedidad())){
+                    listado.get(i).setUnidadMedidad("Unidad");
+                }
+                if ("2".equals(listado.get(i).getUnidadMedidad())){
+                    listado.get(i).setUnidadMedidad("Kit");
+                }
+                if ("3".equals(listado.get(i).getUnidadMedidad())){
+                    listado.get(i).setUnidadMedidad("Combo");
+                }
+            }
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2392,6 +2404,43 @@ public class MediadorAppGastos {
             }
         }
         return registroExitoso;
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public ArticulosDTO ConsultarArticulosXId(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArticulosDTO datos = null;
+
+        try {
+            HttpSession session = WebContextFactory.get().getSession();
+            DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            datos = new ArticulosDAO().ConsultarArticulosXId(conexion, id);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+
+        return datos;
     }
 
 }
