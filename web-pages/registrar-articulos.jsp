@@ -88,7 +88,7 @@
             <div class="col-md-9 form-group"></div>
             <div class="col-md-3 form-group">
                 <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
-                <a class="btn btn-primary" onclick="javascript:cargarPagina('listar-medicos.jsp');">Volver</a>
+                <a class="btn btn-primary" onclick="javascript:cargarPagina('listar-articulos.jsp');">Volver</a>
             </div>
         </div>   
 

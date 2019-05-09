@@ -6,7 +6,6 @@
  * Copyright 2018 by Ing. Carlos Cañizares
  * All rights reserved
  */
-
 package co.IngCarlos.gastosQX.mvc.dao;
 
 import co.IngCarlos.gastosQX.common.util.AsignaAtributoStatement;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  * @author PC
  */
 public class GastosDAO {
-    
+
     /**
      *
      * @param conexion
@@ -53,7 +52,7 @@ public class GastosDAO {
             AsignaAtributoStatement.setString(3, datosGastos.getCedula(), ps);
             AsignaAtributoStatement.setString(4, datosGastos.getFecha(), ps);
             AsignaAtributoStatement.setString(5, datosGastos.getEstado(), ps);
-            AsignaAtributoStatement.setString(6, usuario, ps);            
+            AsignaAtributoStatement.setString(6, usuario, ps);
 
             nRows = ps.executeUpdate();
 
@@ -93,11 +92,11 @@ public class GastosDAO {
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosGastos.getIdProcedimiento(), ps);
-            AsignaAtributoStatement.setString(2, datosGastos.getPaciente(), ps);            
+            AsignaAtributoStatement.setString(2, datosGastos.getPaciente(), ps);
             AsignaAtributoStatement.setString(3, datosGastos.getCedula(), ps);
             AsignaAtributoStatement.setString(4, datosGastos.getFecha(), ps);
             AsignaAtributoStatement.setString(5, Constantes.ESTADO_ACTIVO, ps);
-            AsignaAtributoStatement.setString(6, usuario, ps);                        
+            AsignaAtributoStatement.setString(6, usuario, ps);
             AsignaAtributoStatement.setString(7, datosGastos.getId(), ps);
 
             nRows = ps.executeUpdate();
@@ -110,7 +109,7 @@ public class GastosDAO {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param conexion
@@ -129,7 +128,7 @@ public class GastosDAO {
             cadSQL.append(" DELETE  FROM gastos WHERE gast_id = ? ");
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
-            AsignaAtributoStatement.setString(1, id, ps);            
+            AsignaAtributoStatement.setString(1, id, ps);
             nRows = ps.executeUpdate();
 
             if (nRows > 0) {
@@ -157,7 +156,7 @@ public class GastosDAO {
 
     /**
      *
-     * @param conexion     
+     * @param conexion
      * @return
      */
     public ArrayList<GastosDTO> listarGastos(Connection conexion) {
@@ -168,10 +167,10 @@ public class GastosDAO {
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");            
+            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");
             cadSQL.append(" FROM gastos ");
             cadSQL.append(" WHERE gast_estado = ? ");
-            
+
             ps = conexion.prepareStatement(cadSQL.toString());
             AsignaAtributoStatement.setString(1, Constantes.ESTADO_ACTIVO, ps);
             rs = ps.executeQuery();
@@ -209,13 +208,13 @@ public class GastosDAO {
         }
         return listado;
     }
-    
+
     /**
-     * 
+     *
      * @param conexion
      * @param id
      * @param estado
-     * @return 
+     * @return
      */
     public boolean activarEstadoGastos(Connection conexion, String id, String estado) {
         PreparedStatement ps = null;
@@ -267,7 +266,7 @@ public class GastosDAO {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param conexion
@@ -276,18 +275,18 @@ public class GastosDAO {
      */
     public GastosDTO ConsultarGastosXId(Connection conexion, String id) {
         PreparedStatement ps = null;
-        ResultSet rs = null;        
+        ResultSet rs = null;
         GastosDTO datosGastos = null;
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");            
+            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");
             cadSQL.append(" FROM gastos WHERE gast_id = ?");
-            
+
             ps = conexion.prepareStatement(cadSQL.toString());
             AsignaAtributoStatement.setString(1, id, ps);
             rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 datosGastos = new GastosDTO();
                 datosGastos.setId(rs.getString("gast_id"));
@@ -298,7 +297,7 @@ public class GastosDAO {
                 datosGastos.setEstado(rs.getString("gast_estado"));
                 datosGastos.setRegistradoPor(rs.getString("espe_registradopor"));
                 datosGastos.setFechaRegistro(rs.getString("espe_fecharegistro"));
-                
+
                 //listado.add(datosMedicos);
             }
             ps.close();
@@ -321,5 +320,4 @@ public class GastosDAO {
         return datosGastos;
     }
 
-    
 }

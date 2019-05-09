@@ -54,7 +54,7 @@
             </div>                                
         </div>
 
-        <div class="col-md-6 form-group" id="divId" hidden="true   ">
+        <div class="col-md-6 form-group" id="divId" hidden="false">
             <label for="val_first_name" class="req">id:</label>
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
@@ -64,7 +64,7 @@
 
         <div class="col-md-12 form-group" id="divButtonRegistrar"><br><br>
             <div class="col-md-9 form-group">
-                <a class="btn btn-primary" id="btnAgregar" onclick="javascript:agregarDetalleGasto();">AGREGRAR</a>
+                <a class="btn btn-primary" id="btnAgregar" data-toggle="modal" data-target="#modalLarge" onclick="javascript:listarArticulos();">AGREGRAR</a>
             </div>
             <div class="col-md-3 form-group">
                 <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
@@ -74,12 +74,159 @@
             </div>
         </div>                
 
-        <div class="col-md-12">
+        <div class="col-md-12" id="divDetalleGasto">
             <div id="alert"></div>
+            <div class="col-md-12" id="divFormDetalle">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="val_first_name" class="req">Referencia:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
+                            <input type="text" id="referencia" class="form-control" maxlength="50" onblur="validarReferencia(this.value)" required disabled/>                
+                        </div>            
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label for="val_first_name" class="req">Lote:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
+                            <input type="text" id="lote" class="form-control" maxlength="50" required disabled/>
+                        </div>            
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label for="val_first_name" class="req">Descripción:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
+                            <input type="text" id="descripcion" class="form-control" maxlength="50"  required disabled/>
+                        </div>            
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label for="val_first_name" class="req">Unidad de Medida:</label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="social_flickr_square bs_ttip"></i></span>
+                            <select id="unidad" class="form-control" required disabled>                                    
+                                <option value="">-Seleccione uno-</option>
+                                <option value="UNIDAD">Unidad</option>
+                                <option value="KIT">Kit</option>
+                                <option value="COMBO">Combo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group">            
+                        <label for="val_last_name" class="req">Cantidad:</label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                            <input type="text" id="cantidad" class="form-control" onkeypress="return soloNumeros(event);" maxlength="10" required/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group" hidden="true">            
+                        <label for="val_last_name" class="req">idArticulo:</label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
+                            <input type="text" id="idArticulo" class="form-control" onkeypress="return soloNumeros(event);" maxlength="10" required/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 form-group" id="divButtonRegistrar"><br><br>
+                        <div class="col-md-9 form-group">                            
+                        </div>
+                        <div class="col-md-3 form-group">                            
+                            <a class="btn btn-primary" id="btnGuardar" onclick="javascript:registrarDetalleGastoTemp();"><i class="icon_floppy_alt bs_ttip"></i></a>
+                            <a class="btn btn-primary" id="btnCancelar" onclick="javascript:editarEncabezadoGasto();"><i class="el-icon-remove bs_ttip"></i></a>                            
+                        </div>
+                    </div>  
+
+                </div>            
+            </div>
+            <div class="col-md-12" id="divTablaDetalle">            
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive" >
+                            <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo1" data-filter="#textFilter" data-page-size="5">
+                                <thead>
+                                    <tr>
+                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">REFERENCIA</th>
+                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">LOTE</th>
+                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">DESCRIPCION</th>
+                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">UND MEDIDA</th>
+                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">CANT.</th>                                                                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="listadoDetalle">
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>                                                                
+                </div>
+            </div>            
         </div>
     </div>
 </form>
 
+<!--Modal Large-->
+<div class="modal fade" id="modalLarge">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Buscar Articulos</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="col-md-3">                        
+                        <input type="text" id="buscar" class="form-control" maxlength="50"/>                                                
+                    </div>
+                    <div class="col-md-3">
+                        <select id="buscarPor" class="form-control" required>                                                                
+                            <option value="1">Referencia</option>
+                            <option value="2">Descripcion</option>                                    
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-primary" id="btnBuscar" onclick="javascript:buscarArticulo();">Buscar</a>
+                    </div><br>
+                    <div class="col-md-12">            
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive" >
+                                    <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo" data-filter="#textFilter" data-page-size="5">
+                                        <thead>
+                                            <tr>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">REFERENCIA</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">LOTE</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">DESCRIPCION</th>                                                
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">CANT.</th>      
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">UND MEDIDA</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">MAX</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">MIN</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">AGREGAR</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listado">
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>                                                                
+                        </div>
+                    </div>
+                </div>
+            </div><br>                
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btnCerrarModal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -87,7 +234,9 @@
         jQuery("#btnEditar").hide();
         jQuery("#btnHabilita").hide();
         jQuery("#btnAgregar").hide();
-        
+        jQuery("#divTablaDetalle").hide();
+        jQuery("#divFormDetalle").hide();
+
         //jQuery("#paciente").prop('disabled',true);
         ajaxGastos.listarProcedimiento({
             callback: function (data) {
@@ -150,7 +299,7 @@
         ajaxGastos.actualizarGastos(gastoEncabezado, {
             callback: function (data) {
                 if (data !== null) {
-                    notificacion("success", "el encabezado se ha editado con éxito", "alert");     
+                    notificacion("success", "el encabezado se ha editado con éxito", "alert");
                     desabilita();
                     jQuery("#btnHabilita").show();
                     jQuery("#btnEditar").hide();
@@ -163,6 +312,205 @@
         });
         //desactivar();        
     }
+
+    var listadoArticulos = [];
+    var mapaListadoArticulos = [
+        function (data) {
+            return '<div class="text-center"><td>' + data.referencia + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.lote + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.descripcion + '</td></div>';
+        },
+        function (data) {
+            if (data.estado == 0) {
+                return '<div class="text-center"><td>' + data.cantidad + '</td></div>';
+            }
+            if (data.estado == 1) {
+                if (data.cantidad == 0) {
+                    return '<div class="text-center"><td><div class="tdRed">' + data.cantidad + '</div></td></div>';
+                }
+                if (data.cantidad <= data.cantidadMin) {
+                    return '<div class="text-center"><td><div class="tdYellow">' + data.cantidad + '</div></td></div>';
+                }
+                if (data.cantidad > data.cantidadMin) {
+                }
+                return '<div class="text-center"><td><div class="tdGreen">' + data.cantidad + '</div></td></div>';
+            }
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.unidadMedidad + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.cantidadMax + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.cantidadMin + '</td></div>';
+        },
+        function (data) {
+            if (data.cantidad === "0")
+                return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-primary status-active" disabled onclick="seleccionarArticulo(' + data.id + ');"><i class="el-icon-plus-sign bs_ttip"></i></button></td></div>';
+            else
+                return '<div class="text-center"><td><button id="btnagregar" class="btn btn-primary status-active" onclick="seleccionarArticulo(' + data.id + ');"><i class="el-icon-plus-sign bs_ttip"></i></button></td></div>';
+        }
+    ];
+
+    function listarArticulos() {
+        ajaxGastos.listarTodosLosArticulos({
+            callback: function (data) {
+
+                console.log('lisArt ', data);
+                if (data !== null) {
+                    //$("#tablaReportes").dataTable().fnDestroy();                    
+                    dwr.util.removeAllRows("listado");
+                    listadoArticulos = data;
+                    dwr.util.addRows("listado", listadoArticulos, mapaListadoArticulos, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                } else {
+                    jQuery("#tablaReportes").hide();
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function buscarArticulo() {
+        console.log("buscarPor ", $("#buscarPor").val());
+        console.log("buscar ", $("#buscar").val());
+        if ($("#buscar").val() === "") {
+            listarArticulos();
+            return;
+        }
+        if ($("#buscarPor").val() === "1") {
+            buscarReferencia();
+        } else if ($("#buscarPor").val() === "2") {
+            console.log("descripcion");
+            buscarDescripcion();
+        }
+    }
+
+    function buscarReferencia() {
+        ajaxGastos.buscarPorReferencia($("#buscar").val(), {
+            callback: function (data) {
+                console.log("....", data);
+                if (data !== null) {
+                    dwr.util.removeAllRows("listado");
+                    listadoArticulos = data;
+                    dwr.util.addRows("listado", listadoArticulos, mapaListadoArticulos, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function buscarDescripcion() {
+        ajaxGastos.buscarPorDescripcion($("#buscar").val(), {
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllRows("listado");
+                    listadoArticulos = data;
+                    dwr.util.addRows("listado", listadoArticulos, mapaListadoArticulos, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function seleccionarArticulo(id) {
+        ajaxGastos.ConsultarArticulosXId(id, {
+            callback: function (data) {
+                console.log("detalle ", data);
+                if (data !== null) {
+                    jQuery("#referencia").val(data.referencia);
+                    jQuery("#lote").val(data.lote);
+                    jQuery("#descripcion").val(data.descripcion);
+                    $("#unidad").val(data.unidadMedidad);
+                    jQuery("#idArticulo").val(data.id);
+                    jQuery("#divFormDetalle").show();
+                    jQuery("#btnCerrarModal").click();
+                    jQuery("#cantidad").focus();
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function registrarDetalleGastoTemp() {
+        if ($("#cantidad").val() === "" || $("#cantidad").val() === "0") {
+            notificacion("danger", "El campo cantidad no puede vacio o en cero", "alert");
+            $("#cantidad").focus();
+            return;
+        }
+        var gastoDetalle = {
+            idGastos: $("#idGasto").val(),
+            idArticulos: $("#idArticulo").val(),
+            cantidad: $("#cantidad").val()
+        };
+        ajaxGastos.registrarDetalleGasto(gastoDetalle, {
+            callback: function (data) {
+                if (data !== null) {
+                    listarDetalleXIdGasto();
+                    notificacion("success", "el usuario se ha registrado con éxito", "alert");
+                } else {
+                    notificacion("danger", "ha ocurrido un error al registrar el detalle del gasto", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    var listadoDetalleGastos = [];
+    var mapaDetalleGastos = [
+        function (data) {
+            return '<div class="text-center"><td>' + data.referencia + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.lote + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.descripcion + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.unidadMedidad + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.cantidad + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-primary status-active" disabled onclick="eliminarArticuloDetalle(' + data.id + ');"><i class="el-icon-minus-sign bs_ttip"></i></button></td></div>';
+        }
+    ];
+
+    function listarDetalleXIdGasto() {
+        ajaxGastos.listarDetalleGastoXIdGasto($("#idGasto").val(), {
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllRows("listadoDetalle");
+                    listadoArticulos = data;
+                    dwr.util.addRows("listadoDetalle", listadoArticulos, mapaListadoArticulos, {
+                        escapeHtml: false
+                    });
+                }
+            },
+            timeout: 20000
+        });
+    }    
 
     function desabilita() {
         jQuery("#procedimiento").prop('disabled', true);
@@ -179,6 +527,16 @@
         jQuery("#btnEditar").show();
         jQuery("#btnHabilita").hide();
         jQuery("#btnAgregar").hide();
+    }
+
+    function notificacion(tipo, msj, id) {
+        $(".alert").alert('close');
+        $("#" + id).append('<div class="alert alert-' + tipo + '" role="alert">\n\
+                                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n\
+                                               <span aria-hidden="true">&times;</span>\n\
+                                           </button>' + msj + '\n\
+                                       </div>');
+        setTimeout('$(".alert").alert("close");', '3000');
     }
 
     function validar(formulario) {

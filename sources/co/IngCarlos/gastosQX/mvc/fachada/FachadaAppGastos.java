@@ -639,5 +639,27 @@ public class FachadaAppGastos {
     public boolean actualizarArticulo(ArticulosDTO datosArticulos) {
         return MediadorAppGastos.getInstancia().actualizarArticulo(datosArticulos);
     }
+    
+    /**
+     * 
+     * @param condicion
+     * @return 
+     */
+    @RemoteMethod
+    public ArrayList<ArticulosDTO> buscarPorReferencia(String condicion) {
+        System.out.println("condicionRefe " + condicion);
+        return MediadorAppGastos.getInstancia().buscarPorReferencia(condicion);
+    }
+    
+    /**
+     * 
+     * @param condicion
+     * @return 
+     */
+    @RemoteMethod
+    public ArrayList<ArticulosDTO> buscarPorDescripcion(String condicion) {
+        System.out.println("condicionDescrip " + condicion);
+        return MediadorAppGastos.getInstancia().buscarPorDescripcion(condicion);
+    }
 
 }

@@ -24,6 +24,10 @@ public class DetalleGastosDTO implements Serializable{
     String idArticulos = Generales.EMPTYSTRING;
     String registradoPor = Generales.EMPTYSTRING;
     String fechaRegistro = Generales.EMPTYSTRING;
+    String cantidad = Generales.EMPTYSTRING;
+    String referencia = Generales.EMPTYSTRING;
+    String lote = Generales.EMPTYSTRING;
+    String unidadMedidad = Generales.EMPTYSTRING;
 
     public String getId() {
         return id;
@@ -63,6 +67,38 @@ public class DetalleGastosDTO implements Serializable{
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(String cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
+    }
+
+    public String getLote() {
+        return lote;
+    }
+
+    public void setLote(String lote) {
+        this.lote = lote;
+    }
+
+    public String getUnidadMedidad() {
+        return unidadMedidad;
+    }
+
+    public void setUnidadMedidad(String unidadMedidad) {
+        this.unidadMedidad = unidadMedidad;
     }
     
     public String toStringJson() {

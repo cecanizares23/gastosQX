@@ -32,7 +32,7 @@ public class DetalleGastosDAO {
      * @param usuario
      * @return
      */
-    public boolean registrarDetalleGasto(Connection conexion, DetalleGastosDTO datosDetalleGasto, String usuario) {
+    public boolean registrarDetalleGasto(Connection conexion, DetalleGastosDTO datosDetalleGasto, String usuario){
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -42,14 +42,15 @@ public class DetalleGastosDAO {
 
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" INSERT INTO detalle_gasto (gast_id, arti_id, dega_registradopor)");
-            cadSQL.append("VALUES ( ?, ?, ?)");
+            cadSQL.append(" INSERT INTO detalle_gasto (gast_id, arti_id, dega_cantidad, dega_registradopor)");
+            cadSQL.append("VALUES ( ?, ?, ?, ?)");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
             AsignaAtributoStatement.setString(1, datosDetalleGasto.getIdGastos(), ps);
-            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);            
-            AsignaAtributoStatement.setString(3, usuario, ps);            
+            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);   
+            AsignaAtributoStatement.setString(3, datosDetalleGasto.getCantidad(), ps);
+            AsignaAtributoStatement.setString(4, usuario, ps);            
 
             nRows = ps.executeUpdate();
 
@@ -84,13 +85,14 @@ public class DetalleGastosDAO {
         try {
 
             cadSQL = new StringBuilder();
-            cadSQL.append("UPDATE detalle_gasto SET gast_id = ?, arti_id = ?, dega_registradopor = ? WHERE dega_id = ?");
+            cadSQL.append("UPDATE detalle_gasto SET gast_id = ?, arti_id = ?, dega_registradopor = ?, dega_cantidad = ? WHERE dega_id = ?");
 
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
             AsignaAtributoStatement.setString(1, datosDetalleGasto.getIdGastos(), ps);
-            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);            
-            AsignaAtributoStatement.setString(3, usuario, ps);                        
-            AsignaAtributoStatement.setString(4, datosDetalleGasto.getId(), ps);
+            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);
+            AsignaAtributoStatement.setString(3, datosDetalleGasto.getCantidad(), ps);
+            AsignaAtributoStatement.setString(4, usuario, ps);                        
+            AsignaAtributoStatement.setString(5, datosDetalleGasto.getId(), ps);
 
             nRows = ps.executeUpdate();
             if (nRows > 0) {
@@ -161,9 +163,11 @@ public class DetalleGastosDAO {
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT dega_id, gast_id, arti_id, dega_registradopor ");            
-            cadSQL.append(" FROM detalle_gastos ");
-            cadSQL.append(" WHERE gast_id = ? ");
+            cadSQL.append(" SELECT dega.dega_id, dega.gast_id, dega.arti_id, dega_cantidad, dega_registradopor, ");
+            cadSQL.append(" arti.arti_referencia, arti.arti_lote, arti.arti_unidadmedida  ");
+            cadSQL.append(" INNER JOIN articulo arti ON dega.arti_id = arti.arti_id ");
+            cadSQL.append(" FROM detalle_gastos dega");
+            cadSQL.append(" WHERE dega.gast_id = ? ");
             ps = conexion.prepareStatement(cadSQL.toString());
             AsignaAtributoStatement.setString(1, idGasto, ps);
             rs = ps.executeQuery();
@@ -173,7 +177,11 @@ public class DetalleGastosDAO {
                 datosDetalleGasto.setId(rs.getString("dega_id"));
                 datosDetalleGasto.setIdGastos(rs.getString("gast_id"));
                 datosDetalleGasto.setIdArticulos(rs.getString("arti_id"));
-                datosDetalleGasto.setRegistradoPor(rs.getString("dega_registradopor"));                
+                datosDetalleGasto.setCantidad(rs.getString("dega_cantidad"));
+                datosDetalleGasto.setRegistradoPor(rs.getString("dega_registradopor")); 
+                datosDetalleGasto.setReferencia(rs.getString("arti_referencia"));
+                datosDetalleGasto.setLote(rs.getString("arti_lote"));
+                datosDetalleGasto.setUnidadMedidad(rs.getString("arti_unidadmedida"));
                 
                 listado.add(datosDetalleGasto);
             }

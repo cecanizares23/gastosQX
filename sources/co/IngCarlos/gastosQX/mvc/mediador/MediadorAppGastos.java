@@ -1937,7 +1937,7 @@ public class MediadorAppGastos {
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             conexion.setAutoCommit(false);
             datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
-            datosGastos.setEstado(Constantes.ESTADO_ACTIVO);
+            datosGastos.setEstado(Constantes.DESASENTADO);
             registroExitoso = new GastosDAO().registrarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -2227,7 +2227,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param id
@@ -2264,7 +2264,7 @@ public class MediadorAppGastos {
         }
         return deleteExitoso;
     }
-    
+
     /**
      *
      * @param datosArticulo
@@ -2306,7 +2306,7 @@ public class MediadorAppGastos {
         }
         return validarUsuario;
     }
-    
+
     /**
      *
      * @return
@@ -2320,13 +2320,13 @@ public class MediadorAppGastos {
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new ArticulosDAO().listarTodosLosArticulos(conexion);
             for (int i = 0; i < listado.size(); i++) {
-                if ("1".equals(listado.get(i).getUnidadMedidad())){
+                if ("1".equals(listado.get(i).getUnidadMedidad())) {
                     listado.get(i).setUnidadMedidad("Unidad");
                 }
-                if ("2".equals(listado.get(i).getUnidadMedidad())){
+                if ("2".equals(listado.get(i).getUnidadMedidad())) {
                     listado.get(i).setUnidadMedidad("Kit");
                 }
-                if ("3".equals(listado.get(i).getUnidadMedidad())){
+                if ("3".equals(listado.get(i).getUnidadMedidad())) {
                     listado.get(i).setUnidadMedidad("Combo");
                 }
             }
@@ -2349,7 +2349,7 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param id
@@ -2405,7 +2405,7 @@ public class MediadorAppGastos {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param id
@@ -2441,6 +2441,95 @@ public class MediadorAppGastos {
         }
 
         return datos;
+    }
+
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    public ArrayList<ArticulosDTO> buscarPorReferencia(String condicion) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<ArticulosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new ArticulosDAO().buscarPorReferencia(conexion, condicion);
+            for (int i = 0; i < listado.size(); i++) {
+                if ("1".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Unidad");
+                }
+                if ("2".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Kit");
+                }
+                if ("3".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Combo");
+                }
+            }
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+     /**
+     *
+     * @param condicion
+     * @return
+     */
+    public ArrayList<ArticulosDTO> buscarPorDescripcion(String condicion) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<ArticulosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new ArticulosDAO().buscarPorDescripcion(conexion, condicion);
+            
+            for (int i = 0; i < listado.size(); i++) {
+                if ("1".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Unidad");
+                }
+                if ("2".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Kit");
+                }
+                if ("3".equals(listado.get(i).getUnidadMedidad())) {
+                    listado.get(i).setUnidadMedidad("Combo");
+                }
+            }
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
     }
 
 }

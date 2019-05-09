@@ -35,5 +35,7 @@ public class Constantes {
     public static final String ZERO = "0";
     
     public static final String NOMBRE_IMAGEN_PERIL_USUARIO = "logoCliente";
+    public static final String ASENTADO = "1";
+    public static final String DESASENTADO = "0";
 
 }
