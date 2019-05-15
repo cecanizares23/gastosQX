@@ -28,6 +28,7 @@ public class DetalleGastosDTO implements Serializable{
     String referencia = Generales.EMPTYSTRING;
     String lote = Generales.EMPTYSTRING;
     String unidadMedidad = Generales.EMPTYSTRING;
+    String descripcionArt = Generales.EMPTYSTRING;
 
     public String getId() {
         return id;
@@ -99,6 +100,14 @@ public class DetalleGastosDTO implements Serializable{
 
     public void setUnidadMedidad(String unidadMedidad) {
         this.unidadMedidad = unidadMedidad;
+    }
+
+    public String getDescripcionArt() {
+        return descripcionArt;
+    }
+
+    public void setDescripcionArt(String descripcionArt) {
+        this.descripcionArt = descripcionArt;
     }
     
     public String toStringJson() {

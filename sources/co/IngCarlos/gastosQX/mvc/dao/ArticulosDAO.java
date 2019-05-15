@@ -482,5 +482,35 @@ public class ArticulosDAO {
         }
         return listado;
     }
+    
+    /**
+     * 
+     * @param conexion
+     * @param id
+     * @param cantidad
+     * @return 
+     */
+    public boolean actualizarCantidad(Connection conexion, String cantidad, String id) {
+        PreparedStatement ps = null;
+        int nRows = 0;
+        StringBuilder cadSQL = null;
+        boolean registroExitoso = false;
+        try {
+            cadSQL = new StringBuilder();
+            System.out.println("recibo en el DAO cantidad ::: " + cantidad + " id ::: " + id);
+            cadSQL.append("UPDATE articulos SET arti_cantidad = ? WHERE arti_id = ?");
+            ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
+            AsignaAtributoStatement.setString(1, cantidad, ps);
+            AsignaAtributoStatement.setString(2, id, ps);
+            nRows = ps.executeUpdate();
+            if (nRows > 0) {
+                registroExitoso = true;
+            }
+        } catch (SQLException se) {
+            LoggerMessage.getInstancia().loggerMessageException(se);
+            return false;
+        }
+        return registroExitoso;
+    }
 
 }

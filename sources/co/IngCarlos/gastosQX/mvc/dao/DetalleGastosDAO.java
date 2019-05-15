@@ -6,7 +6,6 @@
  * Copyright 2018 by Ing. Carlos Cañizares
  * All rights reserved
  */
-
 package co.IngCarlos.gastosQX.mvc.dao;
 
 import co.IngCarlos.gastosQX.common.util.AsignaAtributoStatement;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
  * @author PC
  */
 public class DetalleGastosDAO {
-    
+
     /**
      *
      * @param conexion
@@ -32,7 +31,7 @@ public class DetalleGastosDAO {
      * @param usuario
      * @return
      */
-    public boolean registrarDetalleGasto(Connection conexion, DetalleGastosDTO datosDetalleGasto, String usuario){
+    public boolean registrarDetalleGasto(Connection conexion, DetalleGastosDTO datosDetalleGasto, String usuario) {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -48,9 +47,9 @@ public class DetalleGastosDAO {
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
             AsignaAtributoStatement.setString(1, datosDetalleGasto.getIdGastos(), ps);
-            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);   
+            AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);
             AsignaAtributoStatement.setString(3, datosDetalleGasto.getCantidad(), ps);
-            AsignaAtributoStatement.setString(4, usuario, ps);            
+            AsignaAtributoStatement.setString(4, usuario, ps);
 
             nRows = ps.executeUpdate();
 
@@ -91,7 +90,7 @@ public class DetalleGastosDAO {
             AsignaAtributoStatement.setString(1, datosDetalleGasto.getIdGastos(), ps);
             AsignaAtributoStatement.setString(2, datosDetalleGasto.getIdArticulos(), ps);
             AsignaAtributoStatement.setString(3, datosDetalleGasto.getCantidad(), ps);
-            AsignaAtributoStatement.setString(4, usuario, ps);                        
+            AsignaAtributoStatement.setString(4, usuario, ps);
             AsignaAtributoStatement.setString(5, datosDetalleGasto.getId(), ps);
 
             nRows = ps.executeUpdate();
@@ -104,7 +103,7 @@ public class DetalleGastosDAO {
         }
         return registroExitoso;
     }
-    
+
     /**
      *
      * @param conexion
@@ -123,7 +122,7 @@ public class DetalleGastosDAO {
             cadSQL.append(" DELETE  FROM detalle_gasto WHERE dega_id = ? ");
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
 
-            AsignaAtributoStatement.setString(1, id, ps);            
+            AsignaAtributoStatement.setString(1, id, ps);
             nRows = ps.executeUpdate();
 
             if (nRows > 0) {
@@ -161,28 +160,35 @@ public class DetalleGastosDAO {
         ArrayList<DetalleGastosDTO> listado = null;
         DetalleGastosDTO datosDetalleGasto = null;
         StringBuilder cadSQL = null;
+
+        System.out.println("dao idGasto ::: " + idGasto);
+
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT dega.dega_id, dega.gast_id, dega.arti_id, dega_cantidad, dega_registradopor, ");
-            cadSQL.append(" arti.arti_referencia, arti.arti_lote, arti.arti_unidadmedida  ");
-            cadSQL.append(" INNER JOIN articulo arti ON dega.arti_id = arti.arti_id ");
-            cadSQL.append(" FROM detalle_gastos dega");
+            cadSQL.append(" SELECT dega.dega_id, dega.gast_id, dega.arti_id, dega.dega_cantidad, dega.dega_registradopor, ");
+            cadSQL.append(" arti.arti_referencia, arti.arti_lote, arti.arti_unidadmedida, arti.arti_descripcion ");
+            cadSQL.append(" FROM detalle_gasto dega ");
+            cadSQL.append(" INNER JOIN articulos arti ON dega.arti_id = arti.arti_id ");
             cadSQL.append(" WHERE dega.gast_id = ? ");
+
             ps = conexion.prepareStatement(cadSQL.toString());
             AsignaAtributoStatement.setString(1, idGasto, ps);
             rs = ps.executeQuery();
+
             listado = new ArrayList();
+
             while (rs.next()) {
                 datosDetalleGasto = new DetalleGastosDTO();
                 datosDetalleGasto.setId(rs.getString("dega_id"));
                 datosDetalleGasto.setIdGastos(rs.getString("gast_id"));
                 datosDetalleGasto.setIdArticulos(rs.getString("arti_id"));
                 datosDetalleGasto.setCantidad(rs.getString("dega_cantidad"));
-                datosDetalleGasto.setRegistradoPor(rs.getString("dega_registradopor")); 
+                datosDetalleGasto.setRegistradoPor(rs.getString("dega_registradopor"));
                 datosDetalleGasto.setReferencia(rs.getString("arti_referencia"));
                 datosDetalleGasto.setLote(rs.getString("arti_lote"));
                 datosDetalleGasto.setUnidadMedidad(rs.getString("arti_unidadmedida"));
-                
+                datosDetalleGasto.setDescripcionArt(rs.getString("arti.arti_descripcion"));
+
                 listado.add(datosDetalleGasto);
             }
             ps.close();
@@ -206,5 +212,5 @@ public class DetalleGastosDAO {
         }
         return listado;
     }
-    
+
 }

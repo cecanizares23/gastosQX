@@ -72,7 +72,12 @@
                 <a class="btn btn-primary" id="btnEditar" onclick="javascript:editarEncabezadoGasto();">Guardar</a>
                 <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('pagina-inicial.jsp');">Volver</a>
             </div>
-        </div>                
+        </div>
+    </div>
+</form> 
+
+<form id="form_validation1" name="form_validation1" action="autocomplete:off" novalidate>
+    <div class="row"> 
 
         <div class="col-md-12" id="divDetalleGasto">
             <div id="alert"></div>
@@ -142,32 +147,35 @@
 
                 </div>            
             </div>
-            <div class="col-md-12" id="divTablaDetalle">            
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive" >
-                            <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo1" data-filter="#textFilter" data-page-size="5">
-                                <thead>
-                                    <tr>
-                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">REFERENCIA</th>
-                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">LOTE</th>
-                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">DESCRIPCION</th>
-                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">UND MEDIDA</th>
-                                        <th data-toggle="true" class="footable-visible footable-first-column text-center">CANT.</th>                                                                                        
-                                    </tr>
-                                </thead>
-                                <tbody id="listadoDetalle">
 
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>                                                                
-                </div>
-            </div>            
         </div>
     </div>
 </form>
+
+<div class="col-md-12" id="divTablaDetalle">            
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive" >
+                <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo1" data-filter="#textFilter" data-page-size="5">
+                    <thead>
+                        <tr>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">REFERENCIA</th>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">LOTE</th>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">DESCRIPCION</th>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">UND MEDIDA</th>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">CANT.</th>
+                            <th data-toggle="true" class="footable-visible footable-first-column text-center">ELIMINAR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listadoDetalle">
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>                                                                
+    </div>
+</div> 
 
 <!--Modal Large-->
 <div class="modal fade" id="modalLarge">
@@ -228,7 +236,6 @@
     </div>
 </div>
 
-
 <script>
     jQuery(document).ready(function () {
         jQuery("#btnEditar").hide();
@@ -284,7 +291,7 @@
         });
         //desactivar();        
     }
-    
+
     function editarEncabezadoGasto() {
         $("#btnRegistrar").prop('disabled', true);
         var gastoEncabezado = {
@@ -445,6 +452,8 @@
                     jQuery("#divFormDetalle").show();
                     jQuery("#btnCerrarModal").click();
                     jQuery("#cantidad").focus();
+                    $("#divTablaDetalle").hide();
+                    $("#divDetalleGasto").show();
                 }
             },
             timeout: 20000
@@ -464,11 +473,16 @@
         };
         ajaxGastos.registrarDetalleGasto(gastoDetalle, {
             callback: function (data) {
-                if (data !== null) {
+                if (data === "0") {
+                    notificacion("danger", "La cantidad de este articulo es 0, no se puede agregar.", "alert");
+                    $("#cantidad").focus();
+                } else if (data === "1") {
+                    notificacion("danger", "La Cantidad de este articulo quedaria negativa, por lo cual no se puede realizar esta operacion.", "alert");
+                    $("#cantidad").val("");
+                    $("#cantidad").focus();
+                } else if (data === "2") {
+                    notificacion("danger", "Este detalle se ha agregado con exito.", "alert");
                     listarDetalleXIdGasto();
-                    notificacion("success", "el usuario se ha registrado con éxito", "alert");
-                } else {
-                    notificacion("danger", "ha ocurrido un error al registrar el detalle del gasto", "alert");
                 }
             },
             timeout: 20000
@@ -493,7 +507,7 @@
             return '<div class="text-center"><td>' + data.cantidad + '</td></div>';
         },
         function (data) {
-            return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-primary status-active" disabled onclick="eliminarArticuloDetalle(' + data.id + ');"><i class="el-icon-minus-sign bs_ttip"></i></button></td></div>';
+            return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-danger status-active" onclick="eliminarArticuloDetalle(' + data.id + ', ' + data.cantidad +');"><i class="el-icon-minus-sign bs_ttip"></i></button></td></div>';
         }
     ];
 
@@ -502,15 +516,31 @@
             callback: function (data) {
                 if (data !== null) {
                     dwr.util.removeAllRows("listadoDetalle");
-                    listadoArticulos = data;
-                    dwr.util.addRows("listadoDetalle", listadoArticulos, mapaListadoArticulos, {
+                    listadoDetalleGastos = data;
+                    dwr.util.addRows("listadoDetalle", listadoDetalleGastos, mapaDetalleGastos, {
                         escapeHtml: false
                     });
+
+                    $("#divTablaDetalle").show();
+                    $("#divDetalleGasto").hide();
+
+                }else{
+                    $("#divTablaDetalle").hide();
                 }
             },
             timeout: 20000
         });
-    }    
+    }
+    
+    function eliminarArticuloDetalle(id, cantidad){
+      console.log(id, cantidad);
+      ajaxGastos.eliminarDetalleGasto(id, cantidad,{
+          callback: function (data){
+              
+          },
+          timeout: 20000
+      });
+    }
 
     function desabilita() {
         jQuery("#procedimiento").prop('disabled', true);

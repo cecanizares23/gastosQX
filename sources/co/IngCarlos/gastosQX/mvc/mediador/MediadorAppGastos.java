@@ -17,6 +17,7 @@ import co.IngCarlos.gastosQX.common.util.Generales;
 import co.IngCarlos.gastosQX.common.util.LoggerMessage;
 import co.IngCarlos.gastosQX.mvc.dao.ArticulosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.DatosUsuarioDAO;
+import co.IngCarlos.gastosQX.mvc.dao.DetalleGastosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.EspecialidadDAO;
 import co.IngCarlos.gastosQX.mvc.dao.GastosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.MedicoDAO;
@@ -28,6 +29,7 @@ import co.IngCarlos.gastosQX.mvc.dao.UsuarioSeguridadDAO;
 import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.BodyMensajeDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
+import co.IngCarlos.gastosQX.mvc.dto.DetalleGastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
@@ -2486,8 +2488,8 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
-     /**
+
+    /**
      *
      * @param condicion
      * @return
@@ -2500,7 +2502,7 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new ArticulosDAO().buscarPorDescripcion(conexion, condicion);
-            
+
             for (int i = 0; i < listado.size(); i++) {
                 if ("1".equals(listado.get(i).getUnidadMedidad())) {
                     listado.get(i).setUnidadMedidad("Unidad");
@@ -2530,6 +2532,157 @@ public class MediadorAppGastos {
             }
         }
         return listado;
+    }
+
+    /**
+     *
+     * @param datosGastoDetalle
+     * @return
+     */
+    public String registrarDetalleGasto(DetalleGastosDTO datosGastoDetalle) {
+        HttpSession session = WebContextFactory.get().getSession();
+        DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean registroExitoso = false;
+        boolean actualizarCantidad = false;
+        ArticulosDTO datosArticulo = null;
+        int cantidadArticulo = 0;
+        int resta = 0;
+        int cantidadDescontar = 0;
+        String operacion = "";
+
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            conexion.setAutoCommit(false);
+
+            datosArticulo = new ArticulosDAO().ConsultarArticulosXId(conexion, datosGastoDetalle.getIdArticulos());
+
+            if ("0".equals(datosArticulo.getCantidad())) {
+                registroExitoso = false;
+                operacion = "0";
+                System.out.println("la cantidad del articulo seleccionado es 0 no hay existencias en el inventario");
+            } else {
+                cantidadArticulo = Integer.parseInt(datosArticulo.getCantidad());
+                cantidadDescontar = Integer.parseInt(datosGastoDetalle.getCantidad());
+                resta = cantidadArticulo - cantidadDescontar;
+                System.out.println("el resultado de Resta es ::::: " + resta);
+                if (resta < 0) {
+                    operacion = "1";
+                    System.out.println("Resta es negativo por lo cual la operacion no puede ejecutarse");
+                } else {
+                    System.out.println("valores a actualizar cantidad y idArticulo  ::::: " + String.valueOf(resta) + " ::: " + datosGastoDetalle.getIdArticulos());
+                    actualizarCantidad = new ArticulosDAO().actualizarCantidad(conexion, String.valueOf(resta), datosGastoDetalle.getIdArticulos());
+                    System.out.println("se actualizo cantidad con exito ? :::::: " + actualizarCantidad);
+                    if (actualizarCantidad == true) {
+                        registroExitoso = new DetalleGastosDAO().registrarDetalleGasto(conexion, datosGastoDetalle, datosUsuario.getUsuario());
+                        System.out.println("el registro del detalle a sido :::::: " + registroExitoso);
+                        if(registroExitoso == true){
+                            operacion = "2";
+                        }
+                        
+                    }
+                   
+                }
+
+            }
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return operacion;
+    }
+    
+    /**
+     * 
+     * @param idGasto
+     * @return 
+     */
+    public ArrayList<DetalleGastosDTO> listarDetalleGastoXIdGasto(String idGasto) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<DetalleGastosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            listado = new DetalleGastosDAO().listarDetalleGastoXIdGasto(conexion, idGasto);
+           
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @param cantidad
+     * @return 
+     */
+    public String eliminarDetalleGasto(String id, String cantidad) {
+
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        boolean deleteExitoso = false;
+        boolean actualizarCantidad = false;
+        
+        String elimanado = "";
+
+        try {
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            deleteExitoso = new DetalleGastosDAO().eliminarDetalleGasto(conexion, id);
+            
+            if(deleteExitoso == true){
+                actualizarCantidad = new ArticulosDAO().actualizarCantidad(conexion, cantidad, id);
+               // if ()
+               // eliminado = "0";
+            }
+            
+            conexion.close();
+            conexion = null;
+
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            deleteExitoso = false;
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                deleteExitoso = false;
+            }
+        }
+        return elimanado;
     }
 
 }

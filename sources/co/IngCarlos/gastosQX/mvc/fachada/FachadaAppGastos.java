@@ -10,6 +10,7 @@ package co.IngCarlos.gastosQX.mvc.fachada;
 
 import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
+import co.IngCarlos.gastosQX.mvc.dto.DetalleGastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
@@ -660,6 +661,38 @@ public class FachadaAppGastos {
     public ArrayList<ArticulosDTO> buscarPorDescripcion(String condicion) {
         System.out.println("condicionDescrip " + condicion);
         return MediadorAppGastos.getInstancia().buscarPorDescripcion(condicion);
+    }
+    
+    /**
+     *
+     * @param datosGastoDetalle
+     * @return
+     */
+    @RemoteMethod
+    public String registrarDetalleGasto(DetalleGastosDTO datosGastoDetalle) {
+        return MediadorAppGastos.getInstancia().registrarDetalleGasto(datosGastoDetalle);
+    }
+    
+    /**
+     * 
+     * @param idGasto
+     * @return 
+     */
+    @RemoteMethod
+    public ArrayList<DetalleGastosDTO> listarDetalleGastoXIdGasto(String idGasto) {
+        System.out.println("condicionRefe " + idGasto);
+        return MediadorAppGastos.getInstancia().listarDetalleGastoXIdGasto(idGasto);
+    }
+    
+    /**
+     * 
+     * @param id
+     * @param cantidad
+     * @return 
+     */
+    @RemoteMethod
+    public String eliminarDetalleGasto(String id, String cantidad) {
+        return MediadorAppGastos.getInstancia().eliminarDetalleGasto(id, cantidad);
     }
 
 }
