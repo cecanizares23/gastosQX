@@ -451,6 +451,7 @@
                     jQuery("#idArticulo").val(data.id);
                     jQuery("#divFormDetalle").show();
                     jQuery("#btnCerrarModal").click();
+                    jQuery("#cantidad").val("");
                     jQuery("#cantidad").focus();
                     $("#divTablaDetalle").hide();
                     $("#divDetalleGasto").show();
@@ -481,7 +482,7 @@
                     $("#cantidad").val("");
                     $("#cantidad").focus();
                 } else if (data === "2") {
-                    notificacion("danger", "Este detalle se ha agregado con exito.", "alert");
+                    notificacion("success", "Este detalle se ha agregado con exito.", "alert");
                     listarDetalleXIdGasto();
                 }
             },
@@ -498,7 +499,7 @@
             return '<div class="text-center"><td>' + data.lote + '</td></div>';
         },
         function (data) {
-            return '<div class="text-center"><td>' + data.descripcion + '</td></div>';
+            return '<div class="text-center"><td>' + data.descripcionArt + '</td></div>';
         },
         function (data) {
             return '<div class="text-center"><td>' + data.unidadMedidad + '</td></div>';
@@ -507,7 +508,7 @@
             return '<div class="text-center"><td>' + data.cantidad + '</td></div>';
         },
         function (data) {
-            return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-danger status-active" onclick="eliminarArticuloDetalle(' + data.id + ', ' + data.cantidad +');"><i class="el-icon-minus-sign bs_ttip"></i></button></td></div>';
+            return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-danger status-active" onclick="eliminarArticuloDetalle(' + data.id + ', ' + data.cantidad + ', ' + data.idArticulos + ');"><i class="el-icon-minus-sign bs_ttip"></i></button></td></div>';
         }
     ];
 
@@ -532,11 +533,16 @@
         });
     }
     
-    function eliminarArticuloDetalle(id, cantidad){
-      console.log(id, cantidad);
-      ajaxGastos.eliminarDetalleGasto(id, cantidad,{
+    function eliminarArticuloDetalle(id, cantidad, idArticulo){
+      console.log("idDetalle ", id,"cantidad ", cantidad, "idArticulo ", idArticulo);
+      ajaxGastos.eliminarDetalleGasto(id, cantidad, idArticulo,{
           callback: function (data){
-              
+              if(data === "1"){
+                  notificacion("success","Este detalle se ha eliminado con exito.","alert");
+                  listarDetalleXIdGasto();
+              }else{
+                  notificacion("danger","A ocurrido un error al eliminar el detalle","alert");
+              }
           },
           timeout: 20000
       });

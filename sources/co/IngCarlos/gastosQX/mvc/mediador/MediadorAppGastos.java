@@ -2579,12 +2579,12 @@ public class MediadorAppGastos {
                     if (actualizarCantidad == true) {
                         registroExitoso = new DetalleGastosDAO().registrarDetalleGasto(conexion, datosGastoDetalle, datosUsuario.getUsuario());
                         System.out.println("el registro del detalle a sido :::::: " + registroExitoso);
-                        if(registroExitoso == true){
+                        if (registroExitoso == true) {
                             operacion = "2";
                         }
-                        
+
                     }
-                   
+
                 }
 
             }
@@ -2603,11 +2603,11 @@ public class MediadorAppGastos {
         }
         return operacion;
     }
-    
+
     /**
-     * 
+     *
      * @param idGasto
-     * @return 
+     * @return
      */
     public ArrayList<DetalleGastosDTO> listarDetalleGastoXIdGasto(String idGasto) {
         DataBaseConnection dbcon = null;
@@ -2617,7 +2617,7 @@ public class MediadorAppGastos {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new DetalleGastosDAO().listarDetalleGastoXIdGasto(conexion, idGasto);
-           
+
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2637,34 +2637,53 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
-     * 
+     *
      * @param id
      * @param cantidad
-     * @return 
+     * @param idArticulo
+     * @return
      */
-    public String eliminarDetalleGasto(String id, String cantidad) {
+    public String eliminarDetalleGasto(String id, String cantidad, String idArticulo) {
 
         DataBaseConnection dbcon = null;
         Connection conexion = null;
         boolean deleteExitoso = false;
         boolean actualizarCantidad = false;
-        
-        String elimanado = "";
+        ArticulosDTO datosArticulos = null;
+
+        int actual = 0;
+        int suma = 0;
+        int valor = 0;
+
+        String eliminado = "";
 
         try {
 
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            //deleteExitoso = new DetalleGastosDAO().eliminarDetalleGasto(conexion, id);
+
+            datosArticulos = new ArticulosDAO().ConsultarArticulosXId(conexion, idArticulo);
+            System.out.println("datos articulo en mediador ::: " + datosArticulos.toStringJson());
+            actual = Integer.valueOf(datosArticulos.getCantidad());
+            System.out.println("actual ::: " + actual);
+            valor = Integer.valueOf(cantidad);
+            System.out.println("valor ::: " + valor);
+            suma = actual + valor;
+
             deleteExitoso = new DetalleGastosDAO().eliminarDetalleGasto(conexion, id);
-            
-            if(deleteExitoso == true){
-                actualizarCantidad = new ArticulosDAO().actualizarCantidad(conexion, cantidad, id);
-               // if ()
-               // eliminado = "0";
+
+            if (deleteExitoso == true) {
+                actualizarCantidad = new ArticulosDAO().actualizarCantidad(conexion, Integer.toString(suma), idArticulo);
+                if (actualizarCantidad == true) {
+                    eliminado = "1";
+                }
+            } else {
+                eliminado = "0";
             }
-            
+
             conexion.close();
             conexion = null;
 
@@ -2682,7 +2701,7 @@ public class MediadorAppGastos {
                 deleteExitoso = false;
             }
         }
-        return elimanado;
+        return eliminado;
     }
 
 }

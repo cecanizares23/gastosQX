@@ -640,29 +640,29 @@ public class FachadaAppGastos {
     public boolean actualizarArticulo(ArticulosDTO datosArticulos) {
         return MediadorAppGastos.getInstancia().actualizarArticulo(datosArticulos);
     }
-    
+
     /**
-     * 
+     *
      * @param condicion
-     * @return 
+     * @return
      */
     @RemoteMethod
     public ArrayList<ArticulosDTO> buscarPorReferencia(String condicion) {
         System.out.println("condicionRefe " + condicion);
         return MediadorAppGastos.getInstancia().buscarPorReferencia(condicion);
     }
-    
+
     /**
-     * 
+     *
      * @param condicion
-     * @return 
+     * @return
      */
     @RemoteMethod
     public ArrayList<ArticulosDTO> buscarPorDescripcion(String condicion) {
         System.out.println("condicionDescrip " + condicion);
         return MediadorAppGastos.getInstancia().buscarPorDescripcion(condicion);
     }
-    
+
     /**
      *
      * @param datosGastoDetalle
@@ -672,27 +672,28 @@ public class FachadaAppGastos {
     public String registrarDetalleGasto(DetalleGastosDTO datosGastoDetalle) {
         return MediadorAppGastos.getInstancia().registrarDetalleGasto(datosGastoDetalle);
     }
-    
+
     /**
-     * 
+     *
      * @param idGasto
-     * @return 
+     * @return
      */
     @RemoteMethod
     public ArrayList<DetalleGastosDTO> listarDetalleGastoXIdGasto(String idGasto) {
         System.out.println("condicionRefe " + idGasto);
         return MediadorAppGastos.getInstancia().listarDetalleGastoXIdGasto(idGasto);
     }
-    
+
     /**
      * 
      * @param id
      * @param cantidad
+     * @param idArticulo
      * @return 
      */
     @RemoteMethod
-    public String eliminarDetalleGasto(String id, String cantidad) {
-        return MediadorAppGastos.getInstancia().eliminarDetalleGasto(id, cantidad);
+    public String eliminarDetalleGasto(String id, String cantidad, String idArticulo) {
+        return MediadorAppGastos.getInstancia().eliminarDetalleGasto(id, cantidad, idArticulo);
     }
 
 }
