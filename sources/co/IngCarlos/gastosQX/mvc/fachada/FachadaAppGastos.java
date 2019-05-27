@@ -695,5 +695,35 @@ public class FachadaAppGastos {
     public String eliminarDetalleGasto(String id, String cantidad, String idArticulo) {
         return MediadorAppGastos.getInstancia().eliminarDetalleGasto(id, cantidad, idArticulo);
     }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<GastosDTO> buscarGastoFecha(String condicion) {        
+        return MediadorAppGastos.getInstancia().buscarGastoFecha(condicion);
+    }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<GastosDTO> buscarGastoCedulaPaciente(String condicion) {        
+        return MediadorAppGastos.getInstancia().buscarGastoCedulaPaciente(condicion);
+    }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<GastosDTO> ConsultarGastosXId1(String condicion) {        
+        return MediadorAppGastos.getInstancia().ConsultarGastosXId1(condicion);
+    }
 
 }

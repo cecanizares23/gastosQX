@@ -27,6 +27,8 @@ public class GastosDTO implements Serializable {
     String registradoPor = Generales.EMPTYSTRING;
     String fechaRegistro = Generales.EMPTYSTRING;
     String estado = Generales.EMPTYSTRING;
+    String codigoProcedimiento = Generales.EMPTYSTRING;
+    String descripcionProcedimiento = Generales.EMPTYSTRING;
 
     public String getId() {
         return id;
@@ -90,6 +92,22 @@ public class GastosDTO implements Serializable {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getCodigoProcedimiento() {
+        return codigoProcedimiento;
+    }
+
+    public void setCodigoProcedimiento(String codigoProcedimiento) {
+        this.codigoProcedimiento = codigoProcedimiento;
+    }
+
+    public String getDescripcionProcedimiento() {
+        return descripcionProcedimiento;
+    }
+
+    public void setDescripcionProcedimiento(String descripcionProcedimiento) {
+        this.descripcionProcedimiento = descripcionProcedimiento;
     }
     
     public String toStringJson() {

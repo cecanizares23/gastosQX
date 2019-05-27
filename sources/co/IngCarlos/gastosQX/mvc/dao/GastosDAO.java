@@ -167,14 +167,16 @@ public class GastosDAO {
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");
-            cadSQL.append(" FROM gastos ");
-            cadSQL.append(" WHERE gast_estado = ? ");
+            cadSQL.append(" SELECT gast.gast_id, gast.proc_id, gast.gast_paciente, gast.gast_cedula, gast.gast_fecha, gast.gast_estado, gast.gast_registradopor, gast.gast_fecharegistro, ");
+            cadSQL.append(" proc.proc_codigo, proc.proc_descripcion ");
+            cadSQL.append(" FROM gastos gast");
+            cadSQL.append(" INNER JOIN procedimiento proc ON proc.proc_id = gast.proc_id ");
+            cadSQL.append(" ORDER BY gast.gast_id DESC ");
 
             ps = conexion.prepareStatement(cadSQL.toString());
-            AsignaAtributoStatement.setString(1, Constantes.ESTADO_ACTIVO, ps);
             rs = ps.executeQuery();
             listado = new ArrayList();
+
             while (rs.next()) {
                 datosGastos = new GastosDTO();
                 datosGastos.setId(rs.getString("gast_id"));
@@ -185,6 +187,8 @@ public class GastosDAO {
                 datosGastos.setEstado(rs.getString("gast_estado"));
                 datosGastos.setRegistradoPor(rs.getString("gast_registradopor"));
                 datosGastos.setFechaRegistro(rs.getString("gast_fecharegistro"));
+                datosGastos.setDescripcionProcedimiento(rs.getString("proc_descripcion"));
+                datosGastos.setCodigoProcedimiento(rs.getString("proc_codigo"));
                 listado.add(datosGastos);
             }
             ps.close();
@@ -213,10 +217,10 @@ public class GastosDAO {
      *
      * @param conexion
      * @param id
-     * @param estado
+     * @param confirmado
      * @return
      */
-    public boolean activarEstadoGastos(Connection conexion, String id, String estado) {
+    public boolean activarEstadoGastos(Connection conexion, String id, String confirmado) {
         PreparedStatement ps = null;
         int nRows = 0;
         StringBuilder cadSQL = null;
@@ -225,7 +229,7 @@ public class GastosDAO {
             cadSQL = new StringBuilder();
             cadSQL.append("UPDATE gastos SET gast_estado = ? WHERE gast_id = ?");
             ps = conexion.prepareStatement(cadSQL.toString(), Statement.RETURN_GENERATED_KEYS);
-            AsignaAtributoStatement.setString(1, estado, ps);
+            AsignaAtributoStatement.setString(1, confirmado, ps);
             AsignaAtributoStatement.setString(2, id, ps);
             nRows = ps.executeUpdate();
             if (nRows > 0) {
@@ -268,23 +272,27 @@ public class GastosDAO {
     }
 
     /**
-     *
+     * 
      * @param conexion
-     * @param id
-     * @return
+     * @param condicion
+     * @return 
      */
-    public GastosDTO ConsultarGastosXId(Connection conexion, String id) {
+    public GastosDTO ConsultarGastosXId(Connection conexion, String condicion) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         GastosDTO datosGastos = null;
         StringBuilder cadSQL = null;
         try {
             cadSQL = new StringBuilder();
-            cadSQL.append(" SELECT gast_id, proc_id, gast_paciente, gast_cedula, gast_fecha, gast_estado, gast_registradopor, gast_fecharegistro ");
-            cadSQL.append(" FROM gastos WHERE gast_id = ?");
+            cadSQL.append(" SELECT gast.gast_id, gast.proc_id, gast.gast_paciente, gast.gast_cedula, gast.gast_fecha, gast.gast_estado, ");
+            cadSQL.append(" gast.gast_registradopor, gast.gast_fecharegistro, proc.proc_codigo, proc.proc_descripcion ");
+            cadSQL.append(" FROM gastos gast ");
+            cadSQL.append(" INNER JOIN procedimiento proc ON proc.proc_id = gast.proc_id ");
+            cadSQL.append(" WHERE gast.gast_id = ? ");
+            //cadSQL.append(" ORDER BY gast.gast_id DESC ");
 
             ps = conexion.prepareStatement(cadSQL.toString());
-            AsignaAtributoStatement.setString(1, id, ps);
+            AsignaAtributoStatement.setString(1, condicion, ps);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -295,8 +303,10 @@ public class GastosDAO {
                 datosGastos.setCedula(rs.getString("gast_cedula"));
                 datosGastos.setFecha(rs.getString("gast_fecha"));
                 datosGastos.setEstado(rs.getString("gast_estado"));
-                datosGastos.setRegistradoPor(rs.getString("espe_registradopor"));
-                datosGastos.setFechaRegistro(rs.getString("espe_fecharegistro"));
+                datosGastos.setRegistradoPor(rs.getString("gast_registradopor"));
+                datosGastos.setFechaRegistro(rs.getString("gast_fecharegistro"));
+                datosGastos.setCodigoProcedimiento(rs.getString("proc_codigo"));
+                datosGastos.setDescripcionProcedimiento(rs.getString("proc_descripcion"));
 
                 //listado.add(datosMedicos);
             }
@@ -318,6 +328,194 @@ public class GastosDAO {
         }
 
         return datosGastos;
+    }
+
+    /**
+     *
+     * @param conexion
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> buscarGastoFecha(Connection conexion, String condicion) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<GastosDTO> listado = null;
+        GastosDTO datosGastos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT gast.gast_id, gast.proc_id, gast.gast_paciente, gast.gast_cedula, gast.gast_fecha, gast.gast_estado, ");
+            cadSQL.append(" gast.gast_registradopor, gast.gast_fecharegistro, proc.proc_codigo, proc.proc_descripcion ");
+            cadSQL.append(" FROM gastos gast ");
+            cadSQL.append(" INNER JOIN procedimiento proc ON proc.proc_id = gast.proc_id ");
+            cadSQL.append(" WHERE gast.gast_fecha LIKE '%" + condicion + "%' ");
+            cadSQL.append(" ORDER BY gast.gast_id DESC ");
+            //cadSQL.append(" WHERE arti.arti_referencia LIKE '%" + condicion + "%'");
+
+            ps = conexion.prepareStatement(cadSQL.toString());
+            //AsignaAtributoStatement.setString(1, condicion, ps);
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+
+            while (rs.next()) {
+                datosGastos = new GastosDTO();
+                datosGastos.setId(rs.getString("gast_id"));
+                datosGastos.setIdProcedimiento(rs.getString("proc_id"));
+                datosGastos.setPaciente(rs.getString("gast_paciente"));
+                datosGastos.setCedula(rs.getString("gast_cedula"));
+                datosGastos.setFecha(rs.getString("gast_fecha"));
+                datosGastos.setEstado(rs.getString("gast_estado"));
+                datosGastos.setRegistradoPor(rs.getString("gast_registradopor"));
+                datosGastos.setFechaRegistro(rs.getString("gast_fecharegistro"));
+                datosGastos.setDescripcionProcedimiento(rs.getString("proc_descripcion"));
+
+                listado.add(datosGastos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> buscarGastoCedulaPaciente(Connection conexion, String condicion) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<GastosDTO> listado = null;
+        GastosDTO datosGastos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT gast.gast_id, gast.proc_id, gast.gast_paciente, gast.gast_cedula, gast.gast_fecha, gast.gast_estado, ");
+            cadSQL.append(" gast.gast_registradopor, gast.gast_fecharegistro, proc.proc_codigo, proc.proc_descripcion ");
+            cadSQL.append(" FROM gastos gast ");
+            cadSQL.append(" INNER JOIN procedimiento proc ON proc.proc_id = gast.proc_id ");
+            cadSQL.append(" WHERE gast.gast_cedula LIKE '%" + condicion + "%' ");
+            cadSQL.append(" ORDER BY gast.gast_id DESC ");
+            //cadSQL.append(" WHERE arti.arti_referencia LIKE '%" + condicion + "%'");
+
+            ps = conexion.prepareStatement(cadSQL.toString());
+            //AsignaAtributoStatement.setString(1, condicion, ps);
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+
+            while (rs.next()) {
+                datosGastos = new GastosDTO();
+                datosGastos.setId(rs.getString("gast_id"));
+                datosGastos.setIdProcedimiento(rs.getString("proc_id"));
+                datosGastos.setPaciente(rs.getString("gast_paciente"));
+                datosGastos.setCedula(rs.getString("gast_cedula"));
+                datosGastos.setFecha(rs.getString("gast_fecha"));
+                datosGastos.setEstado(rs.getString("gast_estado"));
+                datosGastos.setRegistradoPor(rs.getString("gast_registradopor"));
+                datosGastos.setFechaRegistro(rs.getString("gast_fecharegistro"));
+                datosGastos.setDescripcionProcedimiento(rs.getString("proc_descripcion"));
+
+                listado.add(datosGastos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> ConsultarGastosXId1(Connection conexion, String condicion) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<GastosDTO> listado = null;
+        GastosDTO datosGastos = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT gast.gast_id, gast.proc_id, gast.gast_paciente, gast.gast_cedula, gast.gast_fecha, gast.gast_estado, ");
+            cadSQL.append(" gast.gast_registradopor, gast.gast_fecharegistro, proc.proc_codigo, proc.proc_descripcion ");
+            cadSQL.append(" FROM gastos gast ");
+            cadSQL.append(" INNER JOIN procedimiento proc ON proc.proc_id = gast.proc_id ");
+            cadSQL.append(" WHERE gast.gast_id = ? ");
+            //cadSQL.append(" WHERE arti.arti_referencia LIKE '%" + condicion + "%'");
+
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, condicion, ps);
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+
+            while (rs.next()) {
+                datosGastos = new GastosDTO();
+                datosGastos.setId(rs.getString("gast_id"));
+                datosGastos.setIdProcedimiento(rs.getString("proc_id"));
+                datosGastos.setPaciente(rs.getString("gast_paciente"));
+                datosGastos.setCedula(rs.getString("gast_cedula"));
+                datosGastos.setFecha(rs.getString("gast_fecha"));
+                datosGastos.setEstado(rs.getString("gast_estado"));
+                datosGastos.setRegistradoPor(rs.getString("gast_registradopor"));
+                datosGastos.setFechaRegistro(rs.getString("gast_fecharegistro"));
+                datosGastos.setDescripcionProcedimiento(rs.getString("proc_descripcion"));
+
+                listado.add(datosGastos);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+        return listado;
     }
 
 }

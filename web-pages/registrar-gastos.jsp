@@ -21,7 +21,7 @@
 
 <form id="form_validation" name="form_validation" action="autocomplete:off" novalidate>
     <div class="row"> 
-
+        <div id="alert"></div>
         <div class="col-md-6 form-group">
             <label for="val_first_name" class="req">Procedimiento:</label>
             <div class="input-group">
@@ -65,12 +65,13 @@
         <div class="col-md-12 form-group" id="divButtonRegistrar"><br><br>
             <div class="col-md-9 form-group">
                 <a class="btn btn-primary" id="btnAgregar" data-toggle="modal" data-target="#modalLarge" onclick="javascript:listarArticulos();">AGREGRAR</a>
+                <a class="btn btn-success" id="btnConfirmar" onclick="javascript:confirmarGasto();">CONFIRMAR</a>
             </div>
             <div class="col-md-3 form-group">
                 <button class="btn btn-primary" id="btnRegistrar" onclick="javascript:validar('form_validation');">Guardar</button>
                 <a class="btn btn-primary" id="btnHabilita" onclick="javascript:habilita();">Editar</a>
                 <a class="btn btn-primary" id="btnEditar" onclick="javascript:editarEncabezadoGasto();">Guardar</a>
-                <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('pagina-inicial.jsp');">Volver</a>
+                <a class="btn btn-primary" id="btnVolver" onclick="javascript:cargarPagina('listar-gastos.jsp');">Volver</a>
             </div>
         </div>
     </div>
@@ -80,7 +81,7 @@
     <div class="row"> 
 
         <div class="col-md-12" id="divDetalleGasto">
-            <div id="alert"></div>
+
             <div class="col-md-12" id="divFormDetalle">
                 <div class="row">
                     <div class="col-md-6 form-group">
@@ -243,6 +244,7 @@
         jQuery("#btnAgregar").hide();
         jQuery("#divTablaDetalle").hide();
         jQuery("#divFormDetalle").hide();
+        jQuery("#btnConfirmar").hide();
 
         //jQuery("#paciente").prop('disabled',true);
         ajaxGastos.listarProcedimiento({
@@ -276,7 +278,7 @@
 
                 if (data !== null) {
                     console.log("data11111111", data);
-                    notificacion("success", "el usuario se ha registrado con éxito", "alert");
+                    notificacion("success", "el encabezado se ha creado con éxito", "alert");
                     jQuery("#btnRegistrar").hide();
                     jQuery("#btnHabilita").show();
                     jQuery("#btnAgregar").show();
@@ -524,28 +526,43 @@
 
                     $("#divTablaDetalle").show();
                     $("#divDetalleGasto").hide();
-
-                }else{
+                    $("#btnConfirmar").show();
+                } else {
                     $("#divTablaDetalle").hide();
+                    $("#btnConfirmar").hide();
                 }
             },
             timeout: 20000
         });
     }
-    
-    function eliminarArticuloDetalle(id, cantidad, idArticulo){
-      console.log("idDetalle ", id,"cantidad ", cantidad, "idArticulo ", idArticulo);
-      ajaxGastos.eliminarDetalleGasto(id, cantidad, idArticulo,{
-          callback: function (data){
-              if(data === "1"){
-                  notificacion("success","Este detalle se ha eliminado con exito.","alert");
-                  listarDetalleXIdGasto();
-              }else{
-                  notificacion("danger","A ocurrido un error al eliminar el detalle","alert");
-              }
-          },
-          timeout: 20000
-      });
+
+    function eliminarArticuloDetalle(id, cantidad, idArticulo) {
+        console.log("idDetalle ", id, "cantidad ", cantidad, "idArticulo ", idArticulo);
+        ajaxGastos.eliminarDetalleGasto(id, cantidad, idArticulo, {
+            callback: function (data) {
+                if (data === "1") {
+                    notificacion("success", "Este detalle se ha eliminado con exito.", "alert");
+                    listarDetalleXIdGasto();
+                } else {
+                    notificacion("danger", "A ocurrido un error al eliminar el detalle", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function confirmarGasto() {
+        ajaxGastos.activarEstadoGastos($("#idGasto").val(), {
+            callback: function (data) {
+                if (data === true) {
+                    notificacion("success", "El gasto se ha confirmado con éxito!", "alert");
+                    setTimeout("cargarPagina('registrar-gastos.jsp')", 3000);
+                } else {
+                    notificacion("danger", "Se ha producido un error al confirmar el gasto!", "alert");
+                }
+            },
+            timeout: 20000
+        });
     }
 
     function desabilita() {

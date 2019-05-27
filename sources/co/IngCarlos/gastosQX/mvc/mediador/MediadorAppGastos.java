@@ -1939,7 +1939,7 @@ public class MediadorAppGastos {
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             conexion.setAutoCommit(false);
             datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
-            datosGastos.setEstado(Constantes.DESASENTADO);
+            datosGastos.setEstado(Constantes.NO_CONFIRMADO);
             registroExitoso = new GastosDAO().registrarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
         } catch (Exception e) {
@@ -2038,10 +2038,16 @@ public class MediadorAppGastos {
         DataBaseConnection dbcon = null;
         Connection conexion = null;
         ArrayList<GastosDTO> listado = null;
+        
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new GastosDAO().listarGastos(conexion);
+            
+            for (int i = 0; i < listado.size(); i++) {
+               listado.get(i).setFecha(Formato.formatoFechaMostrar(listado.get(i).getFecha()));
+            }
+            
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2074,7 +2080,7 @@ public class MediadorAppGastos {
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.ESTADO_ACTIVO);
+            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.CONFIRMADO);
         } catch (Exception e) {
             LoggerMessage.getInstancia().loggerMessageException(e);
         } finally {
@@ -2702,6 +2708,115 @@ public class MediadorAppGastos {
             }
         }
         return eliminado;
+    }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> buscarGastoFecha(String condicion) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<GastosDTO> listado = null;
+         
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            
+            condicion = Formato.formatoFecha(condicion);
+            System.out.println("condicion :::::::: " + condicion);
+            
+            listado = new GastosDAO().buscarGastoFecha(conexion, condicion);
+            
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> buscarGastoCedulaPaciente(String condicion) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<GastosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);                        
+            
+            listado = new GastosDAO().buscarGastoCedulaPaciente(conexion, condicion);
+            
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
+    /**
+     *
+     * @param condicion
+     * @return
+     */
+    public ArrayList<GastosDTO> ConsultarGastosXId1(String condicion) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<GastosDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);                        
+            
+            listado = new GastosDAO().ConsultarGastosXId1(conexion, condicion);
+            
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
     }
 
 }
