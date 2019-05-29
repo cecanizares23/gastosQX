@@ -211,6 +211,6 @@ public class DetalleGastosDAO {
             }
         }
         return listado;
-    }        
+    }
 
 }

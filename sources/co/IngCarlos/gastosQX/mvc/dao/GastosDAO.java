@@ -272,10 +272,10 @@ public class GastosDAO {
     }
 
     /**
-     * 
+     *
      * @param conexion
      * @param condicion
-     * @return 
+     * @return
      */
     public GastosDTO ConsultarGastosXId(Connection conexion, String condicion) {
         PreparedStatement ps = null;
@@ -392,7 +392,7 @@ public class GastosDAO {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param conexion
@@ -455,7 +455,7 @@ public class GastosDAO {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param conexion

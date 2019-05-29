@@ -2038,16 +2038,16 @@ public class MediadorAppGastos {
         DataBaseConnection dbcon = null;
         Connection conexion = null;
         ArrayList<GastosDTO> listado = null;
-        
+
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
             listado = new GastosDAO().listarGastos(conexion);
-            
+
             for (int i = 0; i < listado.size(); i++) {
-               listado.get(i).setFecha(Formato.formatoFechaMostrar(listado.get(i).getFecha()));
+                listado.get(i).setFecha(Formato.formatoFechaMostrar(listado.get(i).getFecha()));
             }
-            
+
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2142,6 +2142,7 @@ public class MediadorAppGastos {
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
 
             datos = new GastosDAO().ConsultarGastosXId(conexion, id);
+            datos.setFecha(Formato.formatoFechaMostrar(datos.getFecha()));
 
             conexion.close();
             conexion = null;
@@ -2709,7 +2710,7 @@ public class MediadorAppGastos {
         }
         return eliminado;
     }
-    
+
     /**
      *
      * @param condicion
@@ -2719,16 +2720,16 @@ public class MediadorAppGastos {
         DataBaseConnection dbcon = null;
         Connection conexion = null;
         ArrayList<GastosDTO> listado = null;
-         
+
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            
+
             condicion = Formato.formatoFecha(condicion);
             System.out.println("condicion :::::::: " + condicion);
-            
+
             listado = new GastosDAO().buscarGastoFecha(conexion, condicion);
-            
+
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2748,7 +2749,7 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param condicion
@@ -2760,10 +2761,10 @@ public class MediadorAppGastos {
         ArrayList<GastosDTO> listado = null;
         try {
             dbcon = DataBaseConnection.getInstance();
-            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);                        
-            
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
             listado = new GastosDAO().buscarGastoCedulaPaciente(conexion, condicion);
-            
+
             conexion.close();
             conexion = null;
         } catch (Exception e) {
@@ -2783,7 +2784,7 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param condicion
@@ -2795,10 +2796,10 @@ public class MediadorAppGastos {
         ArrayList<GastosDTO> listado = null;
         try {
             dbcon = DataBaseConnection.getInstance();
-            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);                        
-            
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
             listado = new GastosDAO().ConsultarGastosXId1(conexion, condicion);
-            
+
             conexion.close();
             conexion = null;
         } catch (Exception e) {

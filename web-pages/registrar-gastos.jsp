@@ -245,8 +245,7 @@
         jQuery("#divTablaDetalle").hide();
         jQuery("#divFormDetalle").hide();
         jQuery("#btnConfirmar").hide();
-
-        //jQuery("#paciente").prop('disabled',true);
+        
         ajaxGastos.listarProcedimiento({
             callback: function (data) {
                 if (data !== null) {
@@ -257,7 +256,7 @@
                             descripcion: 'Seleccione tipo de documento'
                         }], 'id', 'descripcion');
                     dwr.util.addOptions("procedimiento", data, 'id', 'descripcion');
-                    //jQuery('#tipoDocumento option[value=1]').hide();
+                    
                 }
             },
             timeout: 20000
@@ -291,7 +290,7 @@
             },
             timeout: 20000
         });
-        //desactivar();        
+              
     }
 
     function editarEncabezadoGasto() {
@@ -303,8 +302,7 @@
             fecha: jQuery("#fecha").val(),
             id: jQuery("#idGasto").val()
         };
-
-        //validaUsuario();        
+        
         ajaxGastos.actualizarGastos(gastoEncabezado, {
             callback: function (data) {
                 if (data !== null) {
@@ -318,8 +316,7 @@
                 }
             },
             timeout: 20000
-        });
-        //desactivar();        
+        });             
     }
 
     var listadoArticulos = [];
