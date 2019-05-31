@@ -88,7 +88,7 @@
                         <label for="val_first_name" class="req">Referencia:</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
-                            <input type="text" id="referencia" class="form-control" maxlength="50" onblur="validarReferencia(this.value)" required disabled/>                
+                            <input type="text" id="referencia" class="form-control" maxlength="50" required disabled/>                
                         </div>            
                     </div>
 
@@ -142,7 +142,7 @@
                         </div>
                         <div class="col-md-3 form-group">                            
                             <a class="btn btn-primary" id="btnGuardar" onclick="javascript:registrarDetalleGastoTemp();"><i class="icon_floppy_alt bs_ttip"></i></a>
-                            <a class="btn btn-primary" id="btnCancelar" onclick="javascript:editarEncabezadoGasto();"><i class="el-icon-remove bs_ttip"></i></a>                            
+                            <a class="btn btn-primary" id="btnCancelar" onclick="javascript:volverMostrar();"><i class="el-icon-remove bs_ttip"></i></a>                            
                         </div>
                     </div>  
 
@@ -169,8 +169,6 @@
                         </tr>
                     </thead>
                     <tbody id="listadoDetalle">
-
-
                     </tbody>
                 </table>
             </div>
@@ -245,7 +243,7 @@
         jQuery("#divTablaDetalle").hide();
         jQuery("#divFormDetalle").hide();
         jQuery("#btnConfirmar").hide();
-        
+
         ajaxGastos.listarProcedimiento({
             callback: function (data) {
                 if (data !== null) {
@@ -256,7 +254,7 @@
                             descripcion: 'Seleccione tipo de documento'
                         }], 'id', 'descripcion');
                     dwr.util.addOptions("procedimiento", data, 'id', 'descripcion');
-                    
+
                 }
             },
             timeout: 20000
@@ -290,7 +288,7 @@
             },
             timeout: 20000
         });
-              
+
     }
 
     function editarEncabezadoGasto() {
@@ -302,7 +300,7 @@
             fecha: jQuery("#fecha").val(),
             id: jQuery("#idGasto").val()
         };
-        
+
         ajaxGastos.actualizarGastos(gastoEncabezado, {
             callback: function (data) {
                 if (data !== null) {
@@ -316,7 +314,7 @@
                 }
             },
             timeout: 20000
-        });             
+        });
     }
 
     var listadoArticulos = [];
@@ -462,7 +460,7 @@
 
     function registrarDetalleGastoTemp() {
         if ($("#cantidad").val() === "" || $("#cantidad").val() === "0") {
-            notificacion("danger", "El campo cantidad no puede vacio o en cero", "alert");
+            notificacion("danger", "El campo cantidad no puede vacio o ser cero", "alert");
             $("#cantidad").focus();
             return;
         }
@@ -540,6 +538,7 @@
                 if (data === "1") {
                     notificacion("success", "Este detalle se ha eliminado con exito.", "alert");
                     listarDetalleXIdGasto();
+                    $("#btnCancelar").click();
                 } else {
                     notificacion("danger", "A ocurrido un error al eliminar el detalle", "alert");
                 }
@@ -553,7 +552,7 @@
             callback: function (data) {
                 if (data === true) {
                     notificacion("success", "El gasto se ha confirmado con éxito!", "alert");
-                    setTimeout("cargarPagina('registrar-gastos.jsp')", 3000);
+                    setTimeout("cargarPagina('listar-gastos.jsp')", 3000);
                 } else {
                     notificacion("danger", "Se ha producido un error al confirmar el gasto!", "alert");
                 }
@@ -577,6 +576,12 @@
         jQuery("#btnEditar").show();
         jQuery("#btnHabilita").hide();
         jQuery("#btnAgregar").hide();
+    }
+
+    function volverMostrar() {
+        $("#divTablaDetalle").show();
+        $("#divDetalleGasto").hide();
+        listarDetalleXIdGasto();        
     }
 
     function notificacion(tipo, msj, id) {

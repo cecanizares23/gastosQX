@@ -169,7 +169,7 @@
             </div>                                
         </div>
 
-        <div class="col-md-6 form-group" id="divId" hidden="false">
+        <div class="col-md-6 form-group" id="divId" hidden="true">
             <label for="val_first_name" class="req">id:</label>
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon_profile bs_ttip"></i></span>
@@ -179,7 +179,7 @@
 
         <div class="col-md-12 form-group" id="divButtonRegistrar"><br><br>
             <div class="col-md-9 form-group">
-                <a class="btn btn-primary" id="btnAgregar" data-toggle="modal" data-target="#modalLarge" onclick="javascript:listarArticulos();">AGREGRAR</a>
+                <a class="btn btn-primary" id="btnAgregar" data-toggle="modal" data-target="#modalLarge1" onclick="javascript:listarArticulos();">AGREGRAR</a>
                 <a class="btn btn-success" id="btnConfirmar" onclick="javascript:confirmarGasto();">CONFIRMAR</a>
             </div>
             <div class="col-md-3 form-group">
@@ -240,7 +240,7 @@
                         <label for="val_last_name" class="req">Cantidad:</label>
                         <div class="input-group date">
                             <span class="input-group-addon"><i class="el-icon-phone-alt"></i></span>
-                            <input type="text" id="cantidad" class="form-control" onkeypress="return soloNumeros(event);" maxlength="10" required/>
+                            <input type="text" id="cantidad1" class="form-control" onkeypress="return soloNumeros(event);" maxlength="10" required/>
                         </div>
                     </div>
 
@@ -257,7 +257,7 @@
                         </div>
                         <div class="col-md-3 form-group">                            
                             <a class="btn btn-primary" id="btnGuardar" onclick="javascript:registrarDetalleGastoTemp();"><i class="icon_floppy_alt bs_ttip"></i></a>
-                            <a class="btn btn-primary" id="btnCancelar" onclick="javascript:editarEncabezadoGasto();"><i class="el-icon-remove bs_ttip"></i></a>                            
+                            <a class="btn btn-primary" id="btnCancelar" onclick="javascript:volverDetalle();"><i class="el-icon-remove bs_ttip"></i></a>                            
                         </div>
                     </div>  
 
@@ -291,6 +291,65 @@
         </div>                                                                
     </div>
 </div> 
+
+<div class="modal fade" id="modalLarge1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Buscar Articulos</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="col-md-3">                        
+                        <input type="text" id="buscar" class="form-control" maxlength="50"/>                                                
+                    </div>
+                    <div class="col-md-3">
+                        <select id="buscarPor1" class="form-control" required>                                                                
+                            <option value="1">Referencia</option>
+                            <option value="2">Descripcion</option>                                    
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-primary" id="btnBuscar" onclick="javascript:buscarArticulo();">Buscar</a>
+                    </div><br>
+                    <div class="col-md-12">            
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive" >
+                                    <table class="table table-yuk2 toggle-arrow-tiny tablet breakpoint footable-loaded footable" id="footable_demo" data-filter="#textFilter" data-page-size="5">
+                                        <thead>
+                                            <tr>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">REFERENCIA</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">LOTE</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">DESCRIPCION</th>                                                
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">CANT.</th>      
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">UND MEDIDA</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">MAX</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">MIN</th>
+                                                <th data-toggle="true" class="footable-visible footable-first-column text-center">AGREGAR</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listadoArticulosAgregar">
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>                                                                
+                        </div>
+                    </div>
+                </div>
+            </div><br>                
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btnCerrarModal1">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--Fin HTML Editar gasto-->
 
 <script>
@@ -419,6 +478,7 @@
                 $("#buscarGasto").val("");
                 $("#buscarPor").val("");
                 if (data !== null) {
+                    //$("#divTablaDetalle").dataTable().fnDestroy();
                     dwr.util.removeAllRows("listadoDetalleGasto");
                     listadoDetalleGastos = data;
                     dwr.util.addRows("listadoDetalleGasto", listadoDetalleGastos, mapaListadoDetalleGastos, {
@@ -551,7 +611,7 @@
                 if (data !== null) {
                     $("#form_validation").show();
                     $("#divBtnAgregar").hide();
-                    $("#tablaGastos").hide();                    
+                    $("#tablaGastos").hide();
                     $("#procedimiento").val(data.idProcedimiento);
                     $("#paciente").val(data.paciente);
                     $("#cedula").val(data.cedula);
@@ -582,6 +642,24 @@
         });
 
     }
+    
+    function listarDetalleAgreElim() {
+        ajaxGastos.listarDetalleGastoXIdGasto($("#idGasto").val(), {
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllRows("listadoDetalle");
+                    listadoDetalleGastos1 = data;
+                    dwr.util.addRows("listadoDetalle", listadoDetalleGastos1, mapaDetalleGastos1, {
+                        escapeHtml: false
+                    });                   
+                } else {
+                    $("#divTablaDetalle").hide();
+                    $("#btnConfirmar").hide();
+                }
+            },
+            timeout: 20000
+        });
+    }
 
     function habilita() {
         $("#procedimiento").prop("disabled", false);
@@ -591,7 +669,7 @@
         $("#btnHabilita").hide();
         $("#btnEditarGasto").show();
     }
-    
+
     function desabilita() {
         $("#procedimiento").prop("disabled", true);
         $("#paciente").prop("disabled", true);
@@ -599,23 +677,8 @@
         $("#fechaGasto").prop("disabled", true);
         $("#btnHabilita").show();
         $("#btnEditarGasto").hide();
-    }
-    
-    function eliminarArticuloDetalle(id, cantidad, idArticulo) {
-        console.log("idDetalle ", id, "cantidad ", cantidad, "idArticulo ", idArticulo);
-        ajaxGastos.eliminarDetalleGasto(id, cantidad, idArticulo, {
-            callback: function (data) {
-                if (data === "1") {
-                    notificacion("success", "Este detalle se ha eliminado con exito.", "alert");
-                    listarDetalleXIdGasto();
-                } else {
-                    notificacion("danger", "A ocurrido un error al eliminar el detalle", "alert");
-                }
-            },
-            timeout: 20000
-        });
-    }
-    
+    }    
+
     function editarEncabezadoGasto() {
         //$("#btnRegistrar").prop('disabled', true);
         var gastoEncabezado = {
@@ -625,7 +688,7 @@
             fecha: jQuery("#fechaGasto").val(),
             id: jQuery("#idGasto").val()
         };
-        
+
         ajaxGastos.actualizarGastos(gastoEncabezado, {
             callback: function (data) {
                 if (data !== null) {
@@ -638,8 +701,216 @@
                     notificacion("danger", "se ha generado un error", "alert");
                 }
             },
-            timeout: 20000 
-        });             
+            timeout: 20000
+        });
+    }
+
+    var listadoArticulosAgre = [];
+    var mapaListadoArticulosAgre = [
+        function (data) {
+            return '<div class="text-center"><td>' + data.referencia + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.lote + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.descripcion + '</td></div>';
+        },
+        function (data) {
+            if (data.estado == 0) {
+                return '<div class="text-center"><td>' + data.cantidad + '</td></div>';
+            }
+            if (data.estado == 1) {
+                if (data.cantidad == 0) {
+                    return '<div class="text-center"><td><div class="tdRed">' + data.cantidad + '</div></td></div>';
+                }
+                if (data.cantidad <= data.cantidadMin) {
+                    return '<div class="text-center"><td><div class="tdYellow">' + data.cantidad + '</div></td></div>';
+                }
+                if (data.cantidad > data.cantidadMin) {
+                }
+                return '<div class="text-center"><td><div class="tdGreen">' + data.cantidad + '</div></td></div>';
+            }
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.unidadMedidad + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.cantidadMax + '</td></div>';
+        },
+        function (data) {
+            return '<div class="text-center"><td>' + data.cantidadMin + '</td></div>';
+        },
+        function (data) {
+            if (data.cantidad === "0")
+                return '<div class="text-center"><td><button id="btnAgregar" class="btn btn-primary status-active" disabled onclick="seleccionarArticulo(' + data.id + ');"><i class="el-icon-plus-sign bs_ttip"></i></button></td></div>';
+            else
+                return '<div class="text-center"><td><button id="btnagregar" class="btn btn-primary status-active" onclick="seleccionarArticulo(' + data.id + ');"><i class="el-icon-plus-sign bs_ttip"></i></button></td></div>';
+        }
+    ];
+
+    function listarArticulos() {
+        ajaxGastos.listarTodosLosArticulos({
+            callback: function (data) {
+
+                console.log('lisArt ', data);
+                if (data !== null) {
+                    //$("#tablaReportes").dataTable().fnDestroy();                    
+                    dwr.util.removeAllRows("listadoArticulosAgregar");
+                    listadoArticulosAgre = data;
+                    dwr.util.addRows("listadoArticulosAgregar", listadoArticulosAgre, mapaListadoArticulosAgre, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                } else {
+                    jQuery("#tablaReportes").hide();
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function buscarArticulo() {
+        console.log("buscarPor1 ", $("#buscarPor1").val());
+        console.log("buscar ", $("#buscar").val());
+        if ($("#buscar").val() === "") {
+            listarArticulos();
+            return;
+        }
+        if ($("#buscarPor1").val() === "1") {
+            buscarReferencia();
+        } else if ($("#buscarPor1").val() === "2") {
+            console.log("descripcion");
+            buscarDescripcion();
+        }
+    }
+
+    function buscarReferencia() {
+        ajaxGastos.buscarPorReferencia($("#buscar").val(), {
+            callback: function (data) {
+                console.log("....", data);
+                if (data !== null) {
+                    dwr.util.removeAllRows("listadoArticulosAgregar");
+                    listadoArticulosAgre = data;
+                    dwr.util.addRows("listadoArticulosAgregar", listadoArticulosAgre, mapaListadoArticulosAgre, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function buscarDescripcion() {
+        ajaxGastos.buscarPorDescripcion($("#buscar").val(), {
+            callback: function (data) {
+                if (data !== null) {
+                    dwr.util.removeAllRows("listadoArticulosAgregar");
+                    listadoArticulosAgre = data;
+                    dwr.util.addRows("listadoArticulosAgregar", listadoArticulosAgre, mapaListadoArticulosAgre, {
+                        escapeHtml: false
+                    });
+                    $(".tdGreen").css({"background": "#5BFF33"});
+                    $(".tdYellow").css({"background": "#F9FF33"});
+                    $(".tdRed").css({"background": "#FF3333"});
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function seleccionarArticulo(id) {
+        ajaxGastos.ConsultarArticulosXId(id, {
+            callback: function (data) {
+                console.log("detalle ", data);
+                if (data !== null) {
+                    jQuery("#referencia").val(data.referencia);
+                    jQuery("#lote").val(data.lote);
+                    jQuery("#descripcion").val(data.descripcion);
+                    $("#unidad").val(data.unidadMedidad);
+                    jQuery("#idArticulo").val(data.id);
+                    jQuery("#divFormDetalle").show();
+                    jQuery("#btnCerrarModal1").click();
+                    jQuery("#cantidad1").val("");
+                    jQuery("#cantidad1").focus();
+                    $("#divTablaDetalle").hide();
+                    $("#form_validation1").show();
+                }
+            },
+            timeout: 20000
+        });
+    }
+
+    function volverDetalle() {
+        $("#divTablaDetalle").show();
+        $("#form_validation1").hide();
+        listarDetalleGastoXIdGasto();
+    }
+
+    function registrarDetalleGastoTemp() {
+        if ($("#cantidad1").val() === "" || $("#cantidad1").val() === "0") {
+            notificacion("danger", "El campo cantidad no puede vacio o ser cero", "alert");
+            $("#cantidad1").focus();
+            return;
+        }
+        var gastoDetalle = {
+            idGastos: $("#idGasto").val(),
+            idArticulos: $("#idArticulo").val(),
+            cantidad: $("#cantidad1").val()
+        };
+        ajaxGastos.registrarDetalleGasto(gastoDetalle, {
+            callback: function (data) {
+                if (data === "0") {
+                    notificacion("danger", "La cantidad de este articulo es 0, no se puede agregar.", "alert");
+                    $("#cantidad1").focus();
+                } else if (data === "1") {
+                    notificacion("danger", "La Cantidad de este articulo quedaria negativa, por lo cual no se puede realizar esta operacion.", "alert");
+                    $("#cantidad1").val("");
+                    $("#cantidad1").focus();
+                } else if (data === "2") {
+                    notificacion("success", "Este detalle se ha agregado con exito.", "alert");
+                    
+                    listarDetalleAgreElim();
+                    $("#divTablaDetalle").show();
+                    $("#form_validation1").hide();
+                }
+            },
+            timeout: 20000
+        });
+    }
+    
+    function eliminarArticuloDetalle(id, cantidad, idArticulo) {
+        console.log("idDetalle ", id, "cantidad ", cantidad, "idArticulo ", idArticulo);
+        ajaxGastos.eliminarDetalleGasto(id, cantidad, idArticulo, {
+            callback: function (data) {
+                if (data === "1") {
+                    notificacion("success", "Este detalle se ha eliminado con exito.", "alert");
+                    listarDetalleAgreElim();
+                } else {
+                    notificacion("danger", "A ocurrido un error al eliminar el detalle", "alert");
+                }
+            },
+            timeout: 20000
+        });
+    }
+    
+    function confirmarGasto() {
+        ajaxGastos.activarEstadoGastos($("#idGasto").val(), {
+            callback: function (data) {
+                if (data === true) {
+                    notificacion("success", "El gasto se ha confirmado con éxito!", "alert");
+                    setTimeout("cargarPagina('listar-gastos.jsp')", 1000);
+                } else {
+                    notificacion("danger", "Se ha producido un error al confirmar el gasto!", "alert");
+                }
+            },
+            timeout: 20000
+        });
     }
 
     //hasta aqui va el jquery de editar gastos
