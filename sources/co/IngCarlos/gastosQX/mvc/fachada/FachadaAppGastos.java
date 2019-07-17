@@ -11,6 +11,7 @@ package co.IngCarlos.gastosQX.mvc.fachada;
 import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DetalleGastosDTO;
+import co.IngCarlos.gastosQX.mvc.dto.DetalleOrdenDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
@@ -724,6 +725,15 @@ public class FachadaAppGastos {
     @RemoteMethod
     public ArrayList<GastosDTO> ConsultarGastosXId1(String condicion) {
         return MediadorAppGastos.getInstancia().ConsultarGastosXId1(condicion);
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public DetalleOrdenDTO ConsultarDetalleOrdenXId(String id) {
+        return MediadorAppGastos.getInstancia().ConsultarDetalleOrdenXId(id);
     }
 
 }

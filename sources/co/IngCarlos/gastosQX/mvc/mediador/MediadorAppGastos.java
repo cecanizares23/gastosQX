@@ -18,9 +18,11 @@ import co.IngCarlos.gastosQX.common.util.LoggerMessage;
 import co.IngCarlos.gastosQX.mvc.dao.ArticulosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.DatosUsuarioDAO;
 import co.IngCarlos.gastosQX.mvc.dao.DetalleGastosDAO;
+import co.IngCarlos.gastosQX.mvc.dao.DetalleOrdenDAO;
 import co.IngCarlos.gastosQX.mvc.dao.EspecialidadDAO;
 import co.IngCarlos.gastosQX.mvc.dao.GastosDAO;
 import co.IngCarlos.gastosQX.mvc.dao.MedicoDAO;
+import co.IngCarlos.gastosQX.mvc.dao.OrdenCompraDAO;
 import co.IngCarlos.gastosQX.mvc.dao.ProcedimientoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoDocumentoDAO;
 import co.IngCarlos.gastosQX.mvc.dao.TipoUsuarioDAO;
@@ -30,9 +32,11 @@ import co.IngCarlos.gastosQX.mvc.dto.ArticulosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.BodyMensajeDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DatosUsuarioDTO;
 import co.IngCarlos.gastosQX.mvc.dto.DetalleGastosDTO;
+import co.IngCarlos.gastosQX.mvc.dto.DetalleOrdenDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
+import co.IngCarlos.gastosQX.mvc.dto.OrdenCompraDTO;
 import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RespuestaDTO;
@@ -1933,6 +1937,8 @@ public class MediadorAppGastos {
         DataBaseConnection dbcon = null;
         Connection conexion = null;
         boolean registroExitoso = false;
+        boolean registroOrden = false;
+        OrdenCompraDTO datosOrdenCompra = new OrdenCompraDTO();
 
         try {
             dbcon = DataBaseConnection.getInstance();
@@ -1941,6 +1947,12 @@ public class MediadorAppGastos {
             datosGastos.setFecha(Formato.formatoFecha(datosGastos.getFecha()));
             datosGastos.setEstado(Constantes.NO_CONFIRMADO);
             registroExitoso = new GastosDAO().registrarGastos(conexion, datosGastos, datosUsuario.getUsuario());
+
+            datosOrdenCompra.setFecha(datosGastos.getFecha());
+            datosOrdenCompra.setIdGasto(datosGastos.getId());            
+            if (registroExitoso == true) {
+                registroOrden = new OrdenCompraDAO().registrarOrdenCompra(conexion, datosOrdenCompra, datosUsuario.getUsuario());
+            }
 
         } catch (Exception e) {
             LoggerMessage.getInstancia().loggerMessageException(e);
@@ -2080,7 +2092,7 @@ public class MediadorAppGastos {
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.CONFIRMADO);
+            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.CONFIRMADO);           
         } catch (Exception e) {
             LoggerMessage.getInstancia().loggerMessageException(e);
         } finally {
@@ -2559,6 +2571,9 @@ public class MediadorAppGastos {
         int resta = 0;
         int cantidadDescontar = 0;
         String operacion = "";
+        boolean registroDetalleOrden = false;
+        DetalleOrdenDTO datosDetalleOrden = new DetalleOrdenDTO();
+        OrdenCompraDTO datosOrdenCompra = null;
 
         try {
             dbcon = DataBaseConnection.getInstance();
@@ -2587,7 +2602,16 @@ public class MediadorAppGastos {
                         registroExitoso = new DetalleGastosDAO().registrarDetalleGasto(conexion, datosGastoDetalle, datosUsuario.getUsuario());
                         System.out.println("el registro del detalle a sido :::::: " + registroExitoso);
                         if (registroExitoso == true) {
+                            datosOrdenCompra = new OrdenCompraDAO().ConsultarOrdenCompraXIdGasto(conexion, datosGastoDetalle.getIdGastos());
                             operacion = "2";
+                            //revisar como voy a llenar el id de la orden de compra ya que en los datos del detalle del gasto no esta la orden de compra que se esta generando.
+                            //consultando en la orden de compra el id del gasto que viene en el detalle.
+                            System.out.println("datosDetalleOrden " + datosGastoDetalle.toStringJson());
+                            datosDetalleOrden.setIdArticulo(datosGastoDetalle.getIdArticulos());
+                            datosDetalleOrden.setCantidadArt(datosGastoDetalle.getCantidad());
+                            datosDetalleOrden.setIdOrdenCompra(datosOrdenCompra.getId());
+                            //datosGastoDetalle.
+                            registroDetalleOrden = new DetalleOrdenDAO().registrarDetalleOrden(conexion, datosDetalleOrden, datosUsuario.getUsuario());
                         }
 
                     }
@@ -2818,6 +2842,43 @@ public class MediadorAppGastos {
             }
         }
         return listado;
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public DetalleOrdenDTO ConsultarDetalleOrdenXId(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        DetalleOrdenDTO datosDetalleOrden = null;
+
+        try {
+            HttpSession session = WebContextFactory.get().getSession();
+            DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            datosDetalleOrden = new DetalleOrdenDAO().ConsultarDetalleOrdenXId(conexion, id);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+
+        return datosDetalleOrden;
     }
 
 }

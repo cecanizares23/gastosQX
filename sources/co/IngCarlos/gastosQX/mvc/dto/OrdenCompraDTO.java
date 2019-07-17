@@ -20,9 +20,12 @@ import java.io.Serializable;
 public class OrdenCompraDTO implements Serializable {
     
     String id = Generales.EMPTYSTRING;
+    String idGasto = Generales.EMPTYSTRING;
     String fecha = Generales.EMPTYSTRING;
     String registradoPor = Generales.EMPTYSTRING;
     String fechaRegistro = Generales.EMPTYSTRING;
+    String estado = Generales.EMPTYSTRING;
+    String confirmado = Generales.EMPTYSTRING;
 
     public String getId() {
         return id;
@@ -30,6 +33,14 @@ public class OrdenCompraDTO implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getIdGasto() {
+        return idGasto;
+    }
+
+    public void setIdGasto(String idGasto) {
+        this.idGasto = idGasto;
     }
 
     public String getFecha() {
@@ -54,6 +65,22 @@ public class OrdenCompraDTO implements Serializable {
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getConfirmado() {
+        return confirmado;
+    }
+
+    public void setConfirmado(String confirmado) {
+        this.confirmado = confirmado;
     }
     
     public String toStringJson() {
