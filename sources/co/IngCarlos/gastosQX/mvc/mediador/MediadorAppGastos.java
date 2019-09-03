@@ -1949,7 +1949,7 @@ public class MediadorAppGastos {
             registroExitoso = new GastosDAO().registrarGastos(conexion, datosGastos, datosUsuario.getUsuario());
 
             datosOrdenCompra.setFecha(datosGastos.getFecha());
-            datosOrdenCompra.setIdGasto(datosGastos.getId());            
+            datosOrdenCompra.setIdGasto(datosGastos.getId());
             if (registroExitoso == true) {
                 registroOrden = new OrdenCompraDAO().registrarOrdenCompra(conexion, datosOrdenCompra, datosUsuario.getUsuario());
             }
@@ -2092,7 +2092,7 @@ public class MediadorAppGastos {
         try {
             dbcon = DataBaseConnection.getInstance();
             conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
-            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.CONFIRMADO);           
+            registroExitoso = new GastosDAO().activarEstadoGastos(conexion, id, Constantes.CONFIRMADO);
         } catch (Exception e) {
             LoggerMessage.getInstancia().loggerMessageException(e);
         } finally {
@@ -2843,7 +2843,7 @@ public class MediadorAppGastos {
         }
         return listado;
     }
-    
+
     /**
      *
      * @param id
@@ -2881,4 +2881,111 @@ public class MediadorAppGastos {
         return datosDetalleOrden;
     }
 
+    /**
+     *
+     * @return
+     */
+    public ArrayList<OrdenCompraDTO> listarOrdenCompra() {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<OrdenCompraDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            listado = new OrdenCompraDAO().listarOrdenCompra(conexion);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public ArrayList<OrdenCompraDTO> listarOrdenesCompraXId(String id) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        OrdenCompraDTO datosOrdenCompra = null;
+        ArrayList<OrdenCompraDTO> listado = null;
+
+        try {
+            HttpSession session = WebContextFactory.get().getSession();
+            DatosUsuarioDTO datosUsuario = (DatosUsuarioDTO) session.getAttribute("datosUsuario");
+
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+
+            listado = new OrdenCompraDAO().listarOrdenesCompraXId(conexion, id);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+
+        return listado;
+    }
+    
+    /**
+     * 
+     * @param fecha
+     * @return 
+     */
+    public ArrayList<OrdenCompraDTO> listarOrdenCompraXFecha(String fecha) {
+        DataBaseConnection dbcon = null;
+        Connection conexion = null;
+        ArrayList<OrdenCompraDTO> listado = null;
+        try {
+            dbcon = DataBaseConnection.getInstance();
+            conexion = dbcon.getConnection(ContextDataResourceNames.MYSQL_GASTOS_JDBC);
+            fecha = Formato.formatoFecha(fecha);
+            listado = new OrdenCompraDAO().listarOrdenCompraXFecha(conexion, fecha);
+
+            conexion.close();
+            conexion = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+        } finally {
+            try {
+                if (conexion != null && !conexion.isClosed()) {
+                    conexion.close();
+                    conexion = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (SQLException e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+            }
+        }
+        return listado;
+    }
+    
 }

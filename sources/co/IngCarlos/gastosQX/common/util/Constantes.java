@@ -30,7 +30,7 @@ public class Constantes {
 
     public static final boolean ENVIO_MENSAJE = true;
     public static final String RESPONSE_MENSAJE_REJECTED = "REJECTED";
-    public static final String RESPONSE_MENSAJE_ENVIADO = "PENDING";
+    public static final String RESPONSE_MENSAJE_ENVIADO = "PENDING";    
     
     public static final String ZERO = "0";
     

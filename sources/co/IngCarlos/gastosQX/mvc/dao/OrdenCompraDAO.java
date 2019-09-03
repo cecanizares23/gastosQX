@@ -156,7 +156,7 @@ public class OrdenCompraDAO {
      * @param id
      * @return
      */
-    public ArrayList<OrdenCompraDTO> listarOrdenCompra(Connection conexion, String id) {
+    public ArrayList<OrdenCompraDTO> listarOrdenCompra(Connection conexion) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<OrdenCompraDTO> listado = null;
@@ -166,10 +166,10 @@ public class OrdenCompraDAO {
             cadSQL = new StringBuilder();
             cadSQL.append(" SELECT  orco_id, orco_fecha, orco_estado, orco_confirmado, orco_registradopor, orco_fecharegistro");            
             cadSQL.append(" FROM orden_compra ");
-            cadSQL.append(" WHERE  orco_estado = ?");
+            //cadSQL.append(" WHERE  orco_estado = ?");
             
             ps = conexion.prepareStatement(cadSQL.toString());
-            AsignaAtributoStatement.setString(1, Constantes.ESTADO_ACTIVO, ps);
+            //AsignaAtributoStatement.setString(1, Constantes.ESTADO_ACTIVO, ps);
             rs = ps.executeQuery();
             listado = new ArrayList();
             while (rs.next()) {
@@ -256,6 +256,116 @@ public class OrdenCompraDAO {
         }
 
         return datosOrdenCompra;
+    }
+    
+    /**
+     * 
+     * @param conexion
+     * @param id
+     * @return 
+     */
+    public ArrayList<OrdenCompraDTO> listarOrdenesCompraXId(Connection conexion, String id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        OrdenCompraDTO datosOrdenCompra = null;
+        ArrayList<OrdenCompraDTO> listado = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT orco_id, gast_id, orco_fecha, orco_estado, orco_confirmado, orco_registradopor ");
+            cadSQL.append(" FROM orden_compra ");            
+            cadSQL.append(" WHERE orco_id = ? ");
+            //cadSQL.append(" ORDER BY gast.gast_id DESC ");
+
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, id, ps);
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+            
+            while (rs.next()) {
+                datosOrdenCompra = new OrdenCompraDTO();
+                datosOrdenCompra.setId(rs.getString("orco_id"));
+                datosOrdenCompra.setIdGasto(rs.getString("gast_id"));
+                datosOrdenCompra.setFecha(rs.getString("orco_fecha"));
+                datosOrdenCompra.setEstado(rs.getString("orco_estado"));
+                datosOrdenCompra.setConfirmado(rs.getString("orco_confirmado"));
+                datosOrdenCompra.setRegistradoPor(rs.getString("orco_registradopor"));
+
+                listado.add(datosOrdenCompra);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+
+        return listado;
+    }
+    
+    /**
+     *
+     * @param conexion
+     * @param fecha
+     * @return
+     */
+    public ArrayList<OrdenCompraDTO> listarOrdenCompraXFecha(Connection conexion, String fecha) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<OrdenCompraDTO> listado = null;
+        OrdenCompraDTO datosOrdenCompra = null;
+        StringBuilder cadSQL = null;
+        try {
+            cadSQL = new StringBuilder();
+            cadSQL.append(" SELECT orco_id, gast_id, orco_fecha, orco_estado, orco_confirmado, orco_registradopor ");
+            cadSQL.append(" FROM orden_compra ");            
+            cadSQL.append(" WHERE orco_fecha = ? ");
+            
+            ps = conexion.prepareStatement(cadSQL.toString());
+            AsignaAtributoStatement.setString(1, fecha, ps);
+            rs = ps.executeQuery();
+            listado = new ArrayList();
+            while (rs.next()) {
+                datosOrdenCompra = new OrdenCompraDTO();
+                datosOrdenCompra.setId(rs.getString("orco_id"));
+                datosOrdenCompra.setIdGasto(rs.getString("gast_id"));
+                datosOrdenCompra.setFecha(rs.getString("orco_fecha"));
+                datosOrdenCompra.setEstado(rs.getString("orco_estado"));
+                datosOrdenCompra.setConfirmado(rs.getString("orco_confirmado"));
+                datosOrdenCompra.setRegistradoPor(rs.getString("orco_registradopor"));
+                
+                listado.add(datosOrdenCompra);
+            }
+            ps.close();
+            ps = null;
+        } catch (Exception e) {
+            LoggerMessage.getInstancia().loggerMessageException(e);
+            return null;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (listado != null && listado.isEmpty()) {
+                    listado = null;
+                }
+            } catch (Exception e) {
+                LoggerMessage.getInstancia().loggerMessageException(e);
+                return null;
+            }
+        }
+        return listado;
     }
     
 }

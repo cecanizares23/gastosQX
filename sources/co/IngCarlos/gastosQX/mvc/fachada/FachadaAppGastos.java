@@ -15,6 +15,7 @@ import co.IngCarlos.gastosQX.mvc.dto.DetalleOrdenDTO;
 import co.IngCarlos.gastosQX.mvc.dto.EspecialidadDTO;
 import co.IngCarlos.gastosQX.mvc.dto.GastosDTO;
 import co.IngCarlos.gastosQX.mvc.dto.MedicoDTO;
+import co.IngCarlos.gastosQX.mvc.dto.OrdenCompraDTO;
 import co.IngCarlos.gastosQX.mvc.dto.ProcedimientoDTO;
 import co.IngCarlos.gastosQX.mvc.dto.RegistroDTO;
 import co.IngCarlos.gastosQX.mvc.dto.TipoDocumentoDTO;
@@ -734,6 +735,34 @@ public class FachadaAppGastos {
     @RemoteMethod
     public DetalleOrdenDTO ConsultarDetalleOrdenXId(String id) {
         return MediadorAppGastos.getInstancia().ConsultarDetalleOrdenXId(id);
+    }
+    
+    /**
+     *     
+     * @return
+     */
+    @RemoteMethod
+    public ArrayList<OrdenCompraDTO> listarOrdenCompra() {
+        return MediadorAppGastos.getInstancia().listarOrdenCompra();
+    }
+    
+    /**
+     *
+     * @return @param id
+     */
+    @RemoteMethod
+    public ArrayList<OrdenCompraDTO> listarOrdenesCompraXId(String id) {
+        return MediadorAppGastos.getInstancia().listarOrdenesCompraXId(id);
+    }
+    
+    /**
+     * 
+     * @param fecha
+     * @return 
+     */
+    @RemoteMethod
+    public ArrayList<OrdenCompraDTO> listarOrdenCompraXFecha(String fecha) {
+        return MediadorAppGastos.getInstancia().listarOrdenCompraXFecha(fecha);
     }
 
 }
